@@ -27,7 +27,7 @@ export function activate(context: vscode.ExtensionContext) {
  */
 class DictionaryCompletionItemProvider implements vscode.CompletionItemProvider {
     public provideCompletionItems(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken): Thenable<vscode.CompletionItem[]> {
-        if (vscode.workspace.getConfiguration('markdown.extension.completion').get<boolean>('enabled')) {
+        // if (vscode.workspace.getConfiguration('markdown.extension.completion').get<boolean>('enabled')) {
             let textBefore = document.lineAt(position.line).text.substring(0, position.character);
             textBefore = textBefore.replace(/\W/g, ' ');
             let currentWord = textBefore.split(/[\s]+/).pop();
@@ -46,8 +46,8 @@ class DictionaryCompletionItemProvider implements vscode.CompletionItemProvider 
                     });
                 return new Promise((resolve, reject) => { resolve(completions) });
             }
-        } else {
-            return new Promise((resolve, reject) => { reject(); });
-        }
+        // } else {
+        //     return new Promise((resolve, reject) => { reject(); });
+        // }
     }
 }
