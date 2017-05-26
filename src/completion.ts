@@ -18,36 +18,67 @@ export function activate(context: vscode.ExtensionContext) {
             indexedItems[firstLetter].push(new vscode.CompletionItem(word, vscode.CompletionItemKind.Text));
         });
     });
-    context.subscriptions.push(vscode.languages.registerCompletionItemProvider('markdown', new DictionaryCompletionItemProvider()));
-    context.subscriptions.push(vscode.languages.registerCompletionItemProvider('latex', new DictionaryCompletionItemProvider()));
+    context.subscriptions.push(vscode.languages.registerCompletionItemProvider('markdown', new DictionaryCompletionItemProvider("markdown")));
+    context.subscriptions.push(vscode.languages.registerCompletionItemProvider('latex', new DictionaryCompletionItemProvider("latex")));
 }
 
 /**
  * Provide completion according to the first letter
  */
 class DictionaryCompletionItemProvider implements vscode.CompletionItemProvider {
+    fileType: string;
+    constructor(fileType: string) {
+        this.fileType = fileType;
+    }
+
     public provideCompletionItems(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken): Thenable<vscode.CompletionItem[]> {
-        // if (vscode.workspace.getConfiguration('markdown.extension.completion').get<boolean>('enabled')) {
-            let textBefore = document.lineAt(position.line).text.substring(0, position.character);
-            textBefore = textBefore.replace(/\W/g, ' ');
-            let currentWord = textBefore.split(/[\s]+/).pop();
-            let firstLetter = currentWord.charAt(0);
-            // [2017.03.24] Found that this function is only invoked when you begin a new word. It means that currentWord.length == 1 when invoked.
-            // console.log('currentWord', currentWord);
-            // console.log('firstLetter', firstLetter);
-            if (firstLetter.toLowerCase() == firstLetter) { /* Not capital */
-                return new Promise((resolve, reject) => { resolve(indexedItems[firstLetter]); });
-            } else {
-                let completions = indexedItems[firstLetter.toLowerCase()]
-                    // .filter(w => { return w.label.startsWith(currentWord) }) // Since currentWord == firstLetter, this line will do nothing
-                    .map(w => {
-                        let newLabel = w.label.charAt(0).toUpperCase() + w.label.slice(1);
-                        return new vscode.CompletionItem(newLabel, vscode.CompletionItemKind.Text)
-                    });
-                return new Promise((resolve, reject) => { resolve(completions) });
-            }
-        // } else {
-        //     return new Promise((resolve, reject) => { reject(); });
-        // }
+        let textBefore = document.lineAt(position.line).text.substring(0, position.character);
+        textBefore = textBefore.replace(/\W/g, ' ');
+        let currentWord = textBefore.split(/[\s]+/).pop();
+        let firstLetter = currentWord.charAt(0);
+        // [2017.03.24] Found that this function is only invoked when you begin a new word.
+        // It means that currentWord.length === 1 when invoked.
+        // (If you have not set the trigger chars)
+        switch (this.fileType) {
+            case "markdown":
+                return this.completeByFirstLetter(firstLetter);
+            case "latex":
+                // Don't suggest words in [citation, reference, environment, command]
+                // \cite
+                if (/(?:\\[a-zA-Z]*cite[a-zA-Z]*(?:\[[^\[\]]*\])?){([^}]*)$/.test(textBefore)) {
+                    return new Promise((resolve, reject) => reject());
+                }
+                console.log(1);
+                // \ref
+                if (/(?:\\[a-zA-Z]*ref[a-zA-Z]*(?:\[[^\[\]]*\])?){([^}]*)$/.test(textBefore)) {
+                    return new Promise((resolve, reject) => reject());
+                }
+                console.log(2);
+                // environment
+                if (/(?:\\(?:begin|end)(?:\[[^\[\]]*\])?){([^}]*)$/.test(textBefore)) {
+                    return new Promise((resolve, reject) => reject());
+                }
+                console.log(3);
+                // command
+                if (/\\([a-zA-Z]*)$/.test(textBefore)) {
+                    return new Promise((resolve, reject) => reject());
+                }
+                console.log(4);
+                return this.completeByFirstLetter(firstLetter);
+        }
+    }
+
+    private completeByFirstLetter(firstLetter: string) {
+        if (firstLetter.toLowerCase() == firstLetter) { /* Not capital */
+            return new Promise((resolve, reject) => resolve(indexedItems[firstLetter]));
+        } else {
+            let completions = indexedItems[firstLetter.toLowerCase()]
+                // .filter(w => { return w.label.startsWith(currentWord) }) // Since currentWord == firstLetter, this line will do nothing
+                .map(w => {
+                    let newLabel = w.label.charAt(0).toUpperCase() + w.label.slice(1);
+                    return new vscode.CompletionItem(newLabel, vscode.CompletionItemKind.Text)
+                });
+            return new Promise((resolve, reject) => resolve(completions));
+        }
     }
 }
