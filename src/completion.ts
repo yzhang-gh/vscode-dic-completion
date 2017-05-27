@@ -33,37 +33,35 @@ class DictionaryCompletionItemProvider implements vscode.CompletionItemProvider 
 
     public provideCompletionItems(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken): Thenable<vscode.CompletionItem[]> {
         let textBefore = document.lineAt(position.line).text.substring(0, position.character);
-        textBefore = textBefore.replace(/\W/g, ' ');
-        let currentWord = textBefore.split(/[\s]+/).pop();
-        let firstLetter = currentWord.charAt(0);
+        let firstLetter;
         // [2017.03.24] Found that this function is only invoked when you begin a new word.
         // It means that currentWord.length === 1 when invoked.
         // (If you have not set the trigger chars)
         switch (this.fileType) {
             case "markdown":
+                textBefore = textBefore.replace(/\W/g, ' ');
+                firstLetter = textBefore.split(/[\s]+/).pop().charAt(0);
                 return this.completeByFirstLetter(firstLetter);
             case "latex":
                 // Don't suggest words in [citation, reference, environment, command]
+                // Regexs come from extension 'LaTeX Workshop'
                 // \cite
                 if (/(?:\\[a-zA-Z]*cite[a-zA-Z]*(?:\[[^\[\]]*\])?){([^}]*)$/.test(textBefore)) {
                     return new Promise((resolve, reject) => reject());
                 }
-                console.log(1);
                 // \ref
                 if (/(?:\\[a-zA-Z]*ref[a-zA-Z]*(?:\[[^\[\]]*\])?){([^}]*)$/.test(textBefore)) {
                     return new Promise((resolve, reject) => reject());
                 }
-                console.log(2);
                 // environment
                 if (/(?:\\(?:begin|end)(?:\[[^\[\]]*\])?){([^}]*)$/.test(textBefore)) {
                     return new Promise((resolve, reject) => reject());
                 }
-                console.log(3);
                 // command
                 if (/\\([a-zA-Z]*)$/.test(textBefore)) {
                     return new Promise((resolve, reject) => reject());
                 }
-                console.log(4);
+                firstLetter = textBefore.split(/[\s]+/).pop().charAt(0);
                 return this.completeByFirstLetter(firstLetter);
         }
     }
