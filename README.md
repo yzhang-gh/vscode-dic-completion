@@ -11,3 +11,9 @@ Enabled for Markdown and LaTeX.
 }
 ```
 into your `settings.json`.
+
+## Changelog
+
+### 0.1.4 (2017.05.27)
+
+- **Fix**: don't suggest words in `\cite`, `\ref` etc.
