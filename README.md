@@ -14,6 +14,10 @@ into your `settings.json`.
 
 ## Changelog
 
+### 0.1.5 (2017.05.30)
+
+- Minor improvement
+
 ### 0.1.4 (2017.05.27)
 
 - **Fix**: don't suggest words in `\cite`, `\ref` etc.
