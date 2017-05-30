@@ -43,24 +43,16 @@ class DictionaryCompletionItemProvider implements vscode.CompletionItemProvider 
                 firstLetter = textBefore.split(/[\s]+/).pop().charAt(0);
                 return this.completeByFirstLetter(firstLetter);
             case "latex":
-                // Don't suggest words in [citation, reference, environment, command]
-                // Regexs come from extension 'LaTeX Workshop'
-                // \cite
-                if (/(?:\\[a-zA-Z]*cite[a-zA-Z]*(?:\[[^\[\]]*\])?){([^}]*)$/.test(textBefore)) {
+                // `|` means cursor
+                // \begin[...|] or \begin{...}[...|]
+                if (/\\(documentclass|usepackage|begin|end|cite|ref)({[^}]*}|)?\[[^\]]*$/.test(textBefore)) {
                     return new Promise((resolve, reject) => reject());
                 }
-                // \ref
-                if (/(?:\\[a-zA-Z]*ref[a-zA-Z]*(?:\[[^\[\]]*\])?){([^}]*)$/.test(textBefore)) {
+                // \begin{...|} or \begin[...]{...|}
+                if (/\\(documentclass|usepackage|begin|end|cite|ref)(\[[^\]]*\]|)?{[^}]*$/.test(textBefore)) {
                     return new Promise((resolve, reject) => reject());
                 }
-                // environment
-                if (/(?:\\(?:begin|end)(?:\[[^\[\]]*\])?){([^}]*)$/.test(textBefore)) {
-                    return new Promise((resolve, reject) => reject());
-                }
-                // command
-                if (/\\([a-zA-Z]*)$/.test(textBefore)) {
-                    return new Promise((resolve, reject) => reject());
-                }
+                textBefore = textBefore.replace(/\W/g, ' ');
                 firstLetter = textBefore.split(/[\s]+/).pop().charAt(0);
                 return this.completeByFirstLetter(firstLetter);
         }
