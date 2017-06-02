@@ -14,7 +14,7 @@ into your `settings.json`.
 
 ## Changelog
 
-### 0.1.5 (2017.05.30)
+### 0.1.6 (2017.06.02), 0.1.5 (2017.05.30)
 
 - Minor improvement
 
