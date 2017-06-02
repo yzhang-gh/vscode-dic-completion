@@ -44,6 +44,10 @@ class DictionaryCompletionItemProvider implements vscode.CompletionItemProvider 
                 return this.completeByFirstLetter(firstLetter);
             case "latex":
                 // `|` means cursor
+                // \command
+                if (/\\[^{\[]*$/.test(textBefore)) {
+                    return new Promise((resolve, reject) => reject());
+                }
                 // \begin[...|] or \begin{...}[...|]
                 if (/\\(documentclass|usepackage|begin|end|cite|ref)({[^}]*}|)?\[[^\]]*$/.test(textBefore)) {
                     return new Promise((resolve, reject) => reject());
