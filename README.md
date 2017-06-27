@@ -17,10 +17,19 @@ into your `settings.json`.
 
 ## Changelog
 
+### 0.2.0 (2017.06.27)
+
+- **New**: Add Oxford 3000 word list
+- **New**: New icon from [Flaticon](http://www.flaticon.com)
+
 ### 0.1.6 (2017.06.02), 0.1.5 (2017.05.30)
 
-- Minor improvement
+- **Other** Minor improvement
 
 ### 0.1.4 (2017.05.27)
 
-- **Fix**: don't suggest words in `\cite`, `\ref` etc.
+- **Fix**: Don't suggest words in `\cite`, `\ref` etc.
+
+## Credit
+
+Icons made by [Freepik](http://www.freepik.com) from [www.flaticon.com](http://www.flaticon.com) is licensed by [CC 3.0 BY](http://creativecommons.org/licenses/by/3.0/)
