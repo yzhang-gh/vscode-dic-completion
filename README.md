@@ -17,14 +17,20 @@ into your `settings.json`.
 
 ## Changelog
 
+### 0.3.0 (2017.07.09)
+
+- **New**: Add 637 more words
+
+A big **Thank You** to [Weihuang Wen](https://github.com/HughWen)
+
 ### 0.2.0 (2017.06.27)
 
-- **New**: Add Oxford 3000 word list
+- **New**: Add 995 more words
 - **New**: New icon from [Flaticon](http://www.flaticon.com)
 
 ### 0.1.6 (2017.06.02), 0.1.5 (2017.05.30)
 
-- **Other** Minor improvement
+- **Other**: Minor improvement
 
 ### 0.1.4 (2017.05.27)
 
