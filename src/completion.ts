@@ -62,7 +62,7 @@ class DictionaryCompletionItemProvider implements vscode.CompletionItemProvider 
         }
     }
 
-    private completeByFirstLetter(firstLetter: string) {
+    private completeByFirstLetter(firstLetter: string): Thenable<vscode.CompletionItem[]> {
         if (firstLetter.toLowerCase() == firstLetter) { /* Not capital */
             return new Promise((resolve, reject) => resolve(indexedItems[firstLetter]));
         } else {
