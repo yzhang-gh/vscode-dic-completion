@@ -20,6 +20,7 @@ export function activate(context: vscode.ExtensionContext) {
     });
     context.subscriptions.push(vscode.languages.registerCompletionItemProvider('markdown', new DictionaryCompletionItemProvider("markdown")));
     context.subscriptions.push(vscode.languages.registerCompletionItemProvider('latex', new DictionaryCompletionItemProvider("latex")));
+    context.subscriptions.push(vscode.languages.registerCompletionItemProvider('html', new DictionaryCompletionItemProvider("html")));
 }
 
 /**
@@ -33,15 +34,12 @@ class DictionaryCompletionItemProvider implements vscode.CompletionItemProvider 
 
     public provideCompletionItems(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken): Thenable<vscode.CompletionItem[]> {
         let textBefore = document.lineAt(position.line).text.substring(0, position.character);
-        let firstLetter;
         // [2017.03.24] Found that this function is only invoked when you begin a new word.
         // It means that currentWord.length === 1 when invoked.
         // (If you have not set the trigger chars)
         switch (this.fileType) {
             case "markdown":
-                textBefore = textBefore.replace(/\W/g, ' ');
-                firstLetter = textBefore.split(/[\s]+/).pop().charAt(0);
-                return this.completeByFirstLetter(firstLetter);
+                return this.completeByTextBefore(textBefore);
             case "latex":
                 // `|` means cursor
                 // \command
@@ -56,10 +54,19 @@ class DictionaryCompletionItemProvider implements vscode.CompletionItemProvider 
                 if (/\\(documentclass|usepackage|begin|end|cite|ref)(\[[^\]]*\]|)?{[^}]*$/.test(textBefore)) {
                     return new Promise((resolve, reject) => reject());
                 }
-                textBefore = textBefore.replace(/\W/g, ' ');
-                firstLetter = textBefore.split(/[\s]+/).pop().charAt(0);
-                return this.completeByFirstLetter(firstLetter);
+                return this.completeByTextBefore(textBefore);
+            case "html":
+                if (/<[^>]*$/.test(textBefore)) {
+                    return new Promise((resolve, reject) => reject());
+                }
+                return this.completeByTextBefore(textBefore);
         }
+    }
+
+    private completeByTextBefore(textBefore: string) {
+        textBefore = textBefore.replace(/\W/g, ' ');
+        let firstLetter = textBefore.split(/[\s]+/).pop().charAt(0);
+        return this.completeByFirstLetter(firstLetter);
     }
 
     private completeByFirstLetter(firstLetter: string): Thenable<vscode.CompletionItem[]> {

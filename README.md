@@ -5,7 +5,7 @@
 >
 > From [vim wikia](http://vim.wikia.com/wiki/Dictionary_completions)
 
-Enabled for Markdown and LaTeX.
+Enabled for Markdown, LaTeX and HTML.
 
 **Note**: After version 1.10.0, the default vscode setting disables quick suggestions for Markdown. To enable this, put
 ```
@@ -16,6 +16,10 @@ Enabled for Markdown and LaTeX.
 into your `settings.json`.
 
 ## Changelog
+
+### 0.4.0 (2017.11.30)
+
+- **New**: HTML support
 
 ### 0.3.0 (2017.07.09)
 

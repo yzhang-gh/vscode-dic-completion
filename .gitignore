@@ -3,3 +3,5 @@ node_modules
 
 *.vsix
 *.log
+
+package-lock.json
