@@ -42,7 +42,7 @@ class DictionaryCompletionItemProvider implements vscode.CompletionItemProvider 
                 return this.completeByTextBefore(textBefore);
             case "latex":
                 // `|` means cursor
-                // \command
+                // \command|
                 if (/\\[^{\[]*$/.test(textBefore)) {
                     return new Promise((resolve, reject) => reject());
                 }
