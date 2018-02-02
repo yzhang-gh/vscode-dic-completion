@@ -15,7 +15,15 @@ Enabled for Markdown, LaTeX and HTML.
 ```
 into your `settings.json`.
 
+## Commands
+
+`Completion: Open User Dictionary`
+
 ## Changelog
+
+### 0.5.0 (2018.02.02)
+
+- **New**: Add user word list ([#2](https://github.com/neilsustc/vscode-dic-completion/issues/2))
 
 ### 0.4.0 (2017.11.30)
 
