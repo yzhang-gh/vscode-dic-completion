@@ -21,7 +21,7 @@ into your `settings.json`.
 
 ## Changelog
 
-### 0.5.0 (2018.02.02)
+### 0.5.1 (2018.02.02)
 
 - **New**: Add user word list ([#2](https://github.com/neilsustc/vscode-dic-completion/issues/2))
 
