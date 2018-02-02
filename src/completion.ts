@@ -33,7 +33,10 @@ export function activate(context: vscode.ExtensionContext) {
 function loadWordList(context: vscode.ExtensionContext) {
     let words = fs.readFileSync(context.asAbsolutePath('words')).toString().split(/\r?\n/);
     if (fs.existsSync(userDictFilename)) {
-        words = words.concat(fs.readFileSync(userDictFilename).toString().split(/\r?\n/));
+        let userWordListStr = fs.readFileSync(userDictFilename).toString();
+        if (userWordListStr.length > 0) {
+            words = words.concat(userWordListStr.split(/\r?\n/));
+        }
     }
 
     indexedItems = {};
