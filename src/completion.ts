@@ -2,26 +2,69 @@
 
 import * as vscode from 'vscode';
 import * as fs from 'fs';
+import * as path from 'path';
 
 let indexedItems = {};
+const indexes = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"];
+const userDictFilename = getUserDictFilename();
 
 export function activate(context: vscode.ExtensionContext) {
-    fs.readFile(context.asAbsolutePath('words'), (err, data) => {
-        if (err) throw err;
-        const indexes = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"];
-        indexes.forEach(i => {
-            indexedItems[i] = [];
-        });
-        let words = data.toString().split(/\r?\n/);
-        words.forEach(word => {
-            let firstLetter = word.charAt(0).toLowerCase();
-            indexedItems[firstLetter].push(new vscode.CompletionItem(word, vscode.CompletionItemKind.Text));
-        });
+    loadWordList(context);
+
+    context.subscriptions.push(vscode.commands.registerCommand('completion.openUserDict', () => {
+        if (!fs.existsSync(userDictFilename)) {
+            fs.closeSync(fs.openSync(userDictFilename, 'w'));
+        }
+
+        vscode.workspace.openTextDocument(userDictFilename).then(doc => vscode.window.showTextDocument(doc));
+    }));
+
+    vscode.workspace.onDidSaveTextDocument(doc => {
+        if (doc.fileName.toLowerCase() === userDictFilename.toLowerCase()) {
+            loadWordList(context);
+        }
     });
+
     context.subscriptions.push(vscode.languages.registerCompletionItemProvider('markdown', new DictionaryCompletionItemProvider("markdown")));
     context.subscriptions.push(vscode.languages.registerCompletionItemProvider('latex', new DictionaryCompletionItemProvider("latex")));
     context.subscriptions.push(vscode.languages.registerCompletionItemProvider('html', new DictionaryCompletionItemProvider("html")));
 }
+
+function loadWordList(context: vscode.ExtensionContext) {
+    let words = fs.readFileSync(context.asAbsolutePath('words')).toString().split(/\r?\n/);
+    if (fs.existsSync(userDictFilename)) {
+        let userWordListStr = fs.readFileSync(userDictFilename).toString();
+        if (userWordListStr.length > 0) {
+            words = words.concat(userWordListStr.split(/\r?\n/));
+        }
+    }
+
+    indexedItems = {};
+    indexes.forEach(i => {
+        indexedItems[i] = [];
+    });
+
+    words.forEach(word => {
+        let firstLetter = word.charAt(0).toLowerCase();
+        indexedItems[firstLetter].push(new vscode.CompletionItem(word, vscode.CompletionItemKind.Text));
+    });
+}
+
+// From https://github.com/bartosz-antosik/vscode-spellright/blob/master/src/spellright.js
+function getUserDictFilename() {
+    let codeFolder = 'Code';
+    const dictName = 'wordlist';
+    if (vscode.version.indexOf('insider') >= 0)
+        codeFolder = 'Code - Insiders';
+    if (process.platform == 'win32')
+        return path.join(process.env.APPDATA, codeFolder, 'User', dictName);
+    else if (process.platform == 'darwin')
+        return path.join(process.env.HOME, 'Library', 'Application Support', codeFolder, 'User', dictName);
+    else if (process.platform == 'linux')
+        return path.join(process.env.HOME, '.config', codeFolder, 'User', dictName);
+    else
+        return '';
+};
 
 /**
  * Provide completion according to the first letter
@@ -46,7 +89,7 @@ class DictionaryCompletionItemProvider implements vscode.CompletionItemProvider 
                 return this.completeByTextBefore(textBefore);
             case "latex":
                 // `|` means cursor
-                // \command
+                // \command|
                 if (/\\[^{\[]*$/.test(textBefore)) {
                     return new Promise((resolve, reject) => reject());
                 }

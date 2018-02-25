@@ -3,7 +3,7 @@
     "displayName": "Dictionary Completion",
     "description": "Word Completion",
     "icon": "images/dictionary.png",
-    "version": "0.4.0",
+    "version": "0.5.1",
     "publisher": "yzhang",
     "engines": {
         "vscode": "^1.18.0"
@@ -21,6 +21,14 @@
         "onLanguage:html"
     ],
     "main": "./out/src/extension",
+    "contributes": {
+        "commands": [
+            {
+                "command": "completion.openUserDict",
+                "title": "Completion: Open User Dictionary"
+            }
+        ]
+    },
     "scripts": {
         "vscode:prepublish": "tsc -p ./",
         "compile": "tsc -watch -p ./",

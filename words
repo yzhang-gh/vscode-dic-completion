@@ -208,6 +208,7 @@ angry
 animal
 ankle
 anniversary
+annotation
 announce
 annoy
 annoyed
@@ -1239,6 +1240,7 @@ device
 devote
 devoted
 devotion
+diagnosis
 diagram
 dialogue
 diamond
@@ -1673,6 +1675,7 @@ exploit
 exploitation
 explore
 explosion
+exponential
 export
 exporter
 expose
@@ -1939,6 +1942,7 @@ gear
 gender
 gene
 general
+generalization
 generally
 generate
 generation
@@ -2715,8 +2719,8 @@ manufacturer
 manufacturing
 many
 map
-March
 march
+March
 margin
 marginal
 marginally
@@ -2736,6 +2740,7 @@ mate
 material
 math
 mathematics
+matrix
 matter
 maturation
 maturational
@@ -2942,6 +2947,8 @@ nervously
 nest
 net
 network
+neural
+neuroscience
 neutral
 neutrality
 neutralization
@@ -3047,8 +3054,8 @@ offset
 often
 oh
 oil
-OK
 ok
+OK
 okay
 old
 old-fashioned
@@ -3279,6 +3286,7 @@ plant
 plastic
 plate
 platform
+plausible
 play
 player
 pleasant
@@ -3418,6 +3426,7 @@ privacy
 private
 privately
 prize
+probability
 probable
 probably
 problem
@@ -3476,6 +3485,7 @@ protection
 protein
 protest
 protocol
+prototype
 proud
 proudly
 prove
@@ -3921,9 +3931,7 @@ selective
 selectively
 selector
 self
-self-
 sell
-Senate
 senate
 senator
 send
@@ -4133,6 +4141,8 @@ Soviet
 space
 Spanish
 spare
+sparse
+spatial
 speak
 speaker
 special
@@ -4399,6 +4409,7 @@ task
 taste
 tax
 taxi
+taxonomy
 taxpayer
 tea
 teach
