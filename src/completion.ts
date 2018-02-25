@@ -39,6 +39,10 @@ class DictionaryCompletionItemProvider implements vscode.CompletionItemProvider 
         // (If you have not set the trigger chars)
         switch (this.fileType) {
             case "markdown":
+                // [caption](don't complete here)
+                if (/\[[^\]]*\]\([^\)]*$/) {
+                    return new Promise((resolve, reject) => reject());
+                }
                 return this.completeByTextBefore(textBefore);
             case "latex":
                 // `|` means cursor
@@ -56,6 +60,7 @@ class DictionaryCompletionItemProvider implements vscode.CompletionItemProvider 
                 }
                 return this.completeByTextBefore(textBefore);
             case "html":
+                // <don't complete here>
                 if (/<[^>]*$/.test(textBefore)) {
                     return new Promise((resolve, reject) => reject());
                 }
