@@ -19,7 +19,17 @@ into your `settings.json`.
 
 `Completion: Open User Dictionary`
 
+## Settings
+
+| Name                             | Default | Description                                         |
+| -------------------------------- | ------- | --------------------------------------------------- |
+| `dictCompletion.leastNumOfChars` | `0`     | Only show completion list until typing N characters |
+
 ## Changelog
+
+### 0.6.1 (2018.04.27)
+
+- **Other**: Don't complete inside HTML `<style>`, `<script>` tags
 
 ### 0.6.0 (2018.02.26)
 
