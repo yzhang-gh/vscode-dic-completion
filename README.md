@@ -1,7 +1,7 @@
 [![version](https://vsmarketplacebadge.apphb.com/version/yzhang.dictionary-completion.svg?style=flat-square)](https://marketplace.visualstudio.com/items?itemName=yzhang.dictionary-completion)  
 [![installs](https://vsmarketplacebadge.apphb.com/installs/yzhang.dictionary-completion.svg?style=flat-square)](https://marketplace.visualstudio.com/items?itemName=yzhang.dictionary-completion)
 
-> Dictionary completion allows user to get a list of keywords, based off of the current word at the cursor.
+> Dictionary completion allows user to get a list of keywords, based off of the current word at the cursor.  
 > This is useful if you are typing a long word (e.g. acknowledgeable) and don't want to finish typing or don't remember the spelling
 >
 > Adapted from [vim wikia](http://vim.wikia.com/wiki/Dictionary_completions)
