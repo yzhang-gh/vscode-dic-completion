@@ -3,7 +3,7 @@
     "displayName": "Dictionary Completion",
     "description": "Word Completion",
     "icon": "images/dictionary.png",
-    "version": "0.5.1",
+    "version": "0.6.0",
     "publisher": "yzhang",
     "engines": {
         "vscode": "^1.18.0"
@@ -27,7 +27,17 @@
                 "command": "completion.openUserDict",
                 "title": "Completion: Open User Dictionary"
             }
-        ]
+        ],
+        "configuration": {
+            "title": "Dictionary Completion",
+            "properties": {
+                "dictCompletion.leastNumOfChars": {
+                    "type": "number",
+                    "default": 0,
+                    "description": "Only show completion list until N characters"
+                }
+            }
+        }
     },
     "scripts": {
         "vscode:prepublish": "tsc -p ./",
