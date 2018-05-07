@@ -25,9 +25,11 @@ export function activate(context: vscode.ExtensionContext) {
         }
     });
 
-    context.subscriptions.push(vscode.languages.registerCompletionItemProvider('markdown', new DictionaryCompletionItemProvider("markdown")));
-    context.subscriptions.push(vscode.languages.registerCompletionItemProvider('latex', new DictionaryCompletionItemProvider("latex")));
-    context.subscriptions.push(vscode.languages.registerCompletionItemProvider('html', new DictionaryCompletionItemProvider("html")));
+    context.subscriptions.push(
+        vscode.languages.registerCompletionItemProvider('markdown', new DictionaryCompletionItemProvider("markdown")),
+        vscode.languages.registerCompletionItemProvider('latex', new DictionaryCompletionItemProvider("latex")),
+        vscode.languages.registerCompletionItemProvider('html', new DictionaryCompletionItemProvider("html"))
+    );
 }
 
 function loadWordList(context: vscode.ExtensionContext) {
