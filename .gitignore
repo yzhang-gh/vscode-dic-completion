@@ -3,5 +3,6 @@ node_modules
 
 *.vsix
 *.log
+words.old
 
 package-lock.json
