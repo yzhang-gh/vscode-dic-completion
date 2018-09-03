@@ -31,6 +31,17 @@ export function activate(context: vscode.ExtensionContext) {
         vscode.languages.registerCompletionItemProvider(getDocSelector('latex'), new DictionaryCompletionItemProvider("latex")),
         vscode.languages.registerCompletionItemProvider(getDocSelector('html'), new DictionaryCompletionItemProvider("html"))
     );
+
+    vscode.commands.registerCommand('completion.removeRedundantSpace', () => {
+        let editor = vscode.window.activeTextEditor;
+        let cursor = editor.selection.active;
+        const followingCharRange = new vscode.Range(cursor, cursor.with({ character: cursor.character + 1 }));
+        if (editor.document.getText(followingCharRange) === ' ') {
+            editor.edit(editBuilder => {
+                editBuilder.delete(followingCharRange);
+            });
+        }
+    });
 }
 
 function getDocSelector(lang: string) {
@@ -57,6 +68,7 @@ function loadWordList(context: vscode.ExtensionContext) {
         let item = new vscode.CompletionItem(word, vscode.CompletionItemKind.Text);
         if (addSpace) {
             item.insertText = word + ' ';
+            item.command = { title: '', command: 'completion.removeRedundantSpace' };
         }
         indexedItems[firstLetter].push(item);
     });
