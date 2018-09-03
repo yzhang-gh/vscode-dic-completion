@@ -29,6 +29,12 @@ into your `settings.json`.
 
 ## Changelog
 
+### 0.7.0 (2018.09.03)
+
+- **New**: Option `addSpaceAfterCompletion`
+- **New**: Comment out lines in user dictionary file with `//` ([#6](https://github.com/neilsustc/vscode-dic-completion/issues/6))
+- **Other**: More words
+
 ### 0.6.1 (2018.04.27)
 
 - **Other**: Don't complete inside HTML `<style>`, `<script>` tags

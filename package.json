@@ -3,7 +3,7 @@
     "displayName": "Dictionary Completion",
     "description": "Word Completion",
     "icon": "images/dictionary.png",
-    "version": "0.6.1",
+    "version": "0.7.0",
     "publisher": "yzhang",
     "engines": {
         "vscode": "^1.18.0"
