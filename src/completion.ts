@@ -7,6 +7,7 @@ import * as path from 'path';
 let indexedItems = {};
 const indexes = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"];
 const userDictFilename = getUserDictFilename();
+let addSpace = vscode.workspace.getConfiguration('dictCompletion').get<boolean>('addSpaceAfterCompletion');
 
 export function activate(context: vscode.ExtensionContext) {
     loadWordList(context);
@@ -26,10 +27,14 @@ export function activate(context: vscode.ExtensionContext) {
     });
 
     context.subscriptions.push(
-        vscode.languages.registerCompletionItemProvider('markdown', new DictionaryCompletionItemProvider("markdown")),
-        vscode.languages.registerCompletionItemProvider('latex', new DictionaryCompletionItemProvider("latex")),
-        vscode.languages.registerCompletionItemProvider('html', new DictionaryCompletionItemProvider("html"))
+        vscode.languages.registerCompletionItemProvider(getDocSelector('markdown'), new DictionaryCompletionItemProvider("markdown")),
+        vscode.languages.registerCompletionItemProvider(getDocSelector('latex'), new DictionaryCompletionItemProvider("latex")),
+        vscode.languages.registerCompletionItemProvider(getDocSelector('html'), new DictionaryCompletionItemProvider("html"))
     );
+}
+
+function getDocSelector(lang: string) {
+    return [{ language: lang, scheme: 'file' }, { language: lang, scheme: 'untitled' }];
 }
 
 function loadWordList(context: vscode.ExtensionContext) {
@@ -49,7 +54,11 @@ function loadWordList(context: vscode.ExtensionContext) {
 
     words.forEach(word => {
         let firstLetter = word.charAt(0).toLowerCase();
-        indexedItems[firstLetter].push(new vscode.CompletionItem(word, vscode.CompletionItemKind.Text));
+        let item = new vscode.CompletionItem(word, vscode.CompletionItemKind.Text);
+        if (addSpace) {
+            item.insertText = word + ' ';
+        }
+        indexedItems[firstLetter].push(item);
     });
 }
 

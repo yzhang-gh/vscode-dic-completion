@@ -35,6 +35,11 @@
                     "type": "number",
                     "default": 0,
                     "description": "Only show completion list until N characters"
+                },
+                "dictCompletion.addSpaceAfterCompletion": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Add a space after completion"
                 }
             }
         }
