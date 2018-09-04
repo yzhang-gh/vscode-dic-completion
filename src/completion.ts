@@ -120,7 +120,7 @@ class DictionaryCompletionItemProvider implements vscode.CompletionItemProvider 
             case "latex":
                 // `|` means cursor
                 // \command|
-                if (/\\[^{\[]*$/.test(textBefore)) {
+                if (/\\[^ {\[]*$/.test(textBefore)) {
                     return [];
                 }
                 // \begin[...|] or \begin{...}[...|]
