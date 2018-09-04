@@ -32,13 +32,17 @@ export function activate(context: vscode.ExtensionContext) {
         vscode.languages.registerCompletionItemProvider(getDocSelector('html'), new DictionaryCompletionItemProvider("html"))
     );
 
-    vscode.commands.registerCommand('completion.removeRedundantSpace', () => {
+    vscode.commands.registerCommand('completion.removeUnneededSpace', () => {
         let editor = vscode.window.activeTextEditor;
         let cursor = editor.selection.active;
         const followingCharRange = new vscode.Range(cursor, cursor.with({ character: cursor.character + 1 }));
         if (editor.document.getText(followingCharRange) === ' ') {
             editor.edit(editBuilder => {
                 editBuilder.delete(followingCharRange);
+            });
+        } else if (editor.document.getText(followingCharRange).match(/[,.:;?!\-]/)) {
+            editor.edit(editBuilder => {
+                editBuilder.delete(new vscode.Range(cursor, cursor.with({ character: cursor.character - 1 })));
             });
         }
     });
@@ -68,7 +72,7 @@ function loadWordList(context: vscode.ExtensionContext) {
         let item = new vscode.CompletionItem(word, vscode.CompletionItemKind.Text);
         if (addSpace) {
             item.insertText = word + ' ';
-            item.command = { title: '', command: 'completion.removeRedundantSpace' };
+            item.command = { title: '', command: 'completion.removeUnneededSpace' };
         }
         indexedItems[firstLetter].push(item);
     });
