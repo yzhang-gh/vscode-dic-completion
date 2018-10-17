@@ -44,6 +44,7 @@ function loadWordList(context: vscode.ExtensionContext) {
             words = words.concat(userWordListStr.split(/\r?\n/));
         }
     }
+    words = Array.from(new Set(words));
     words = words.filter(word => word.length > 0 && !word.startsWith('//'));
 
     indexedItems = {};
