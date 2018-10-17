@@ -18,7 +18,8 @@
     "activationEvents": [
         "onLanguage:markdown",
         "onLanguage:latex",
-        "onLanguage:html"
+        "onLanguage:html",
+        "onCommand:completion.openUserDict"
     ],
     "main": "./out/src/extension",
     "contributes": {
