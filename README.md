@@ -1,6 +1,6 @@
 [![version](https://vsmarketplacebadge.apphb.com/version/yzhang.dictionary-completion.svg?style=flat-square)](https://marketplace.visualstudio.com/items?itemName=yzhang.dictionary-completion)  
 [![installs](https://vsmarketplacebadge.apphb.com/installs/yzhang.dictionary-completion.svg?style=flat-square)](https://marketplace.visualstudio.com/items?itemName=yzhang.dictionary-completion)  
-[![AppVeyor](https://img.shields.io/appveyor/ci/neilsustc/vscode-dic-completion.svg?style=flat-square&label=appveyor%20build)](https://ci.appveyor.com/project/neilsustc/vscode-dic-completion/build/artifacts)
+[![AppVeyor](https://img.shields.io/appveyor/ci/yzhang-gh/vscode-dic-completion.svg?style=flat-square&label=appveyor%20build)](https://ci.appveyor.com/project/yzhang-gh/vscode-dic-completion/build/artifacts)
 
 > Dictionary completion allows user to get a list of keywords, based off of the current word at the cursor.  
 > This is useful if you are typing a long word (e.g. acknowledgeable) and don't want to finish typing or don't remember the spelling
@@ -32,7 +32,7 @@ into your `settings.json`.
 ### 0.7.0 (2018.09.03)
 
 - **New**: Option `addSpaceAfterCompletion`
-- **New**: Comment out lines in user dictionary file with `//` ([#6](https://github.com/neilsustc/vscode-dic-completion/issues/6))
+- **New**: Comment out lines in user dictionary file with `//` ([#6](https://github.com/yzhang-gh/vscode-dic-completion/issues/6))
 - **Other**: More words
 
 ### 0.6.1 (2018.04.27)
@@ -41,11 +41,11 @@ into your `settings.json`.
 
 ### 0.6.0 (2018.02.26)
 
-- **New**: Option `dictCompletion.leastNumOfChars` ([#3](https://github.com/neilsustc/vscode-dic-completion/issues/3))
+- **New**: Option `dictCompletion.leastNumOfChars` ([#3](https://github.com/yzhang-gh/vscode-dic-completion/issues/3))
 
 ### 0.5.1 (2018.02.02)
 
-- **New**: Add user word list ([#2](https://github.com/neilsustc/vscode-dic-completion/issues/2))
+- **New**: Add user word list ([#2](https://github.com/yzhang-gh/vscode-dic-completion/issues/2))
 
 ### 0.4.0 (2017.11.30)
 
