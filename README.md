@@ -29,6 +29,10 @@ into your `settings.json`.
 
 ## Changelog
 
+### 0.7.1 (2019.01.24)
+
+- **Other**: Bug fixes and more words
+
 ### 0.7.0 (2018.09.03)
 
 - **New**: Option `addSpaceAfterCompletion`
