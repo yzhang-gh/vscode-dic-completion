@@ -15,7 +15,7 @@ export function activate(context: vscode.ExtensionContext) {
     loadUserWordsAndRebuildIndex(builtInWords);
 
     context.subscriptions.push(vscode.commands.registerCommand('completion.openUserDict', () => {
-        if (vscode.workspace.getConfiguration('dictCompletion').get<boolean>('externalUserDictFile')) {
+        if (vscode.workspace.getConfiguration('dictCompletion').get<boolean>('UseExternalUserDictFile')) {
             if (!fs.existsSync(userDictFilename)) {
                 fs.closeSync(fs.openSync(userDictFilename, 'w'));
             }
@@ -28,7 +28,7 @@ export function activate(context: vscode.ExtensionContext) {
 
     vscode.workspace.onDidSaveTextDocument(doc => {
         if (
-            vscode.workspace.getConfiguration('dictCompletion').get<boolean>('externalUserDictFile')
+            vscode.workspace.getConfiguration('dictCompletion').get<boolean>('UseExternalUserDictFile')
             && doc.fileName.toLowerCase() === userDictFilename.toLowerCase()
         ) {
             loadUserWordsAndRebuildIndex(builtInWords);
@@ -37,10 +37,10 @@ export function activate(context: vscode.ExtensionContext) {
 
     vscode.workspace.onDidChangeConfiguration(e => {
         if (
-            e.affectsConfiguration('dictCompletion.externalUserDictFile')
+            e.affectsConfiguration('dictCompletion.UseExternalUserDictFile')
             || (
                 e.affectsConfiguration('dictCompletion.userDictionary')
-                && !vscode.workspace.getConfiguration('dictCompletion').get<boolean>('externalUserDictFile')
+                && !vscode.workspace.getConfiguration('dictCompletion').get<boolean>('UseExternalUserDictFile')
             )
         ) {
             loadUserWordsAndRebuildIndex(builtInWords);
@@ -61,7 +61,7 @@ function getDocSelector(lang: string) {
 function loadUserWordsAndRebuildIndex(builtInWords: string[]) {
     let words = [];
     // User wordlist
-    if (vscode.workspace.getConfiguration('dictCompletion').get<boolean>('externalUserDictFile')) {
+    if (vscode.workspace.getConfiguration('dictCompletion').get<boolean>('UseExternalUserDictFile')) {
         if (fs.existsSync(userDictFilename)) {
             let userWordListStr = fs.readFileSync(userDictFilename).toString();
             if (userWordListStr.length > 0) {

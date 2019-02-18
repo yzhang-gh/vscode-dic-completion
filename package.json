@@ -43,7 +43,7 @@
                     "default": false,
                     "description": "Add a space after completion"
                 },
-                "dictCompletion.externalUserDictFile": {
+                "dictCompletion.UseExternalUserDictFile": {
                     "type": "boolean",
                     "default": true,
                     "description": "Use external user dictionary file or `userDictionary` inside VSCode settings"
