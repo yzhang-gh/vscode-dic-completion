@@ -4,24 +4,46 @@ import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
 
-let indexedItems = {};
+let indexedComplItems = {};
 const indexes = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"];
 const userDictFilename = getUserDictFilename();
 
 export function activate(context: vscode.ExtensionContext) {
-    loadWordList(context);
+    // Built-in wordlist
+    const builtInWords = fs.readFileSync(context.asAbsolutePath('words')).toString().split(/\r?\n/);
+
+    loadUserWordsAndRebuildIndex(builtInWords);
 
     context.subscriptions.push(vscode.commands.registerCommand('completion.openUserDict', () => {
-        if (!fs.existsSync(userDictFilename)) {
-            fs.closeSync(fs.openSync(userDictFilename, 'w'));
-        }
+        if (vscode.workspace.getConfiguration('dictCompletion').get<boolean>('externalUserDictFile')) {
+            if (!fs.existsSync(userDictFilename)) {
+                fs.closeSync(fs.openSync(userDictFilename, 'w'));
+            }
 
-        vscode.workspace.openTextDocument(userDictFilename).then(doc => vscode.window.showTextDocument(doc));
+            vscode.workspace.openTextDocument(userDictFilename).then(doc => vscode.window.showTextDocument(doc));
+        } else {
+            vscode.commands.executeCommand('workbench.action.openSettingsJson');
+        }
     }));
 
     vscode.workspace.onDidSaveTextDocument(doc => {
-        if (doc.fileName.toLowerCase() === userDictFilename.toLowerCase()) {
-            loadWordList(context);
+        if (
+            vscode.workspace.getConfiguration('dictCompletion').get<boolean>('externalUserDictFile')
+            && doc.fileName.toLowerCase() === userDictFilename.toLowerCase()
+        ) {
+            loadUserWordsAndRebuildIndex(builtInWords);
+        }
+    });
+
+    vscode.workspace.onDidChangeConfiguration(e => {
+        if (
+            e.affectsConfiguration('dictCompletion.externalUserDictFile')
+            || (
+                e.affectsConfiguration('dictCompletion.userDictionary')
+                && !vscode.workspace.getConfiguration('dictCompletion').get<boolean>('externalUserDictFile')
+            )
+        ) {
+            loadUserWordsAndRebuildIndex(builtInWords);
         }
     });
 
@@ -36,26 +58,32 @@ function getDocSelector(lang: string) {
     return [{ language: lang, scheme: 'file' }, { language: lang, scheme: 'untitled' }];
 }
 
-function loadWordList(context: vscode.ExtensionContext) {
-    let words = fs.readFileSync(context.asAbsolutePath('words')).toString().split(/\r?\n/);
-    if (fs.existsSync(userDictFilename)) {
-        let userWordListStr = fs.readFileSync(userDictFilename).toString();
-        if (userWordListStr.length > 0) {
-            words = words.concat(userWordListStr.split(/\r?\n/));
+function loadUserWordsAndRebuildIndex(builtInWords: string[]) {
+    let words = [];
+    // User wordlist
+    if (vscode.workspace.getConfiguration('dictCompletion').get<boolean>('externalUserDictFile')) {
+        if (fs.existsSync(userDictFilename)) {
+            let userWordListStr = fs.readFileSync(userDictFilename).toString();
+            if (userWordListStr.length > 0) {
+                words = builtInWords.concat(userWordListStr.split(/\r?\n/));
+            }
         }
+    } else {
+        words = builtInWords.concat(vscode.workspace.getConfiguration('dictCompletion').get<Array<string>>('userDictionary'))
     }
+
     words = Array.from(new Set(words));
     words = words.filter(word => word.length > 0 && !word.startsWith('//'));
 
-    indexedItems = {};
+    indexedComplItems = {};
     indexes.forEach(i => {
-        indexedItems[i] = [];
+        indexedComplItems[i] = [];
     });
 
     words.forEach(word => {
         let firstLetter = word.charAt(0).toLowerCase();
         let item = new vscode.CompletionItem(word, vscode.CompletionItemKind.Text);
-        indexedItems[firstLetter].push(item);
+        indexedComplItems[firstLetter].push(item);
     });
 }
 
@@ -140,13 +168,13 @@ class DictionaryCompletionItemProvider implements vscode.CompletionItemProvider 
 
     private completeByFirstLetter(firstLetter: string, addSpace: boolean): Thenable<vscode.CompletionItem[]> {
         if (firstLetter.toLowerCase() == firstLetter) { /* Lowercase */
-            let completions: vscode.CompletionItem[] = indexedItems[firstLetter];
+            let completions: vscode.CompletionItem[] = indexedComplItems[firstLetter];
             if (addSpace) {
                 completions.forEach(item => item.insertText = item.label + ' ');
             }
             return new Promise((resolve, reject) => resolve(completions));
         } else { /* Uppercase */
-            let completions: vscode.CompletionItem[] = indexedItems[firstLetter.toLowerCase()].map(item => {
+            let completions: vscode.CompletionItem[] = indexedComplItems[firstLetter.toLowerCase()].map(item => {
                 let newLabel = item.label.charAt(0).toUpperCase() + item.label.slice(1);
                 let newItem = new vscode.CompletionItem(newLabel, vscode.CompletionItemKind.Text);
                 if (addSpace) {
