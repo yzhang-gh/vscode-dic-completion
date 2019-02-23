@@ -12,7 +12,7 @@ export function activate(context: vscode.ExtensionContext) {
     // Built-in wordlist
     const builtInWords = fs.readFileSync(context.asAbsolutePath('words')).toString().split(/\r?\n/);
 
-    loadUserWordsAndRebuildIndex(builtInWords);
+    loadOtherWordsAndRebuildIndex(builtInWords);
 
     context.subscriptions.push(vscode.commands.registerCommand('completion.openUserDict', () => {
         if (vscode.workspace.getConfiguration('dictCompletion').get<boolean>('useExternalUserDictFile')) {
@@ -31,7 +31,7 @@ export function activate(context: vscode.ExtensionContext) {
             vscode.workspace.getConfiguration('dictCompletion').get<boolean>('useExternalUserDictFile')
             && doc.fileName.toLowerCase() === userDictFilename.toLowerCase()
         ) {
-            loadUserWordsAndRebuildIndex(builtInWords);
+            loadOtherWordsAndRebuildIndex(builtInWords);
         }
     });
 
@@ -43,7 +43,7 @@ export function activate(context: vscode.ExtensionContext) {
                 && !vscode.workspace.getConfiguration('dictCompletion').get<boolean>('useExternalUserDictFile')
             )
         ) {
-            loadUserWordsAndRebuildIndex(builtInWords);
+            loadOtherWordsAndRebuildIndex(builtInWords);
         }
     });
 
@@ -58,19 +58,33 @@ function getDocSelector(lang: string) {
     return [{ language: lang, scheme: 'file' }, { language: lang, scheme: 'untitled' }];
 }
 
-function loadUserWordsAndRebuildIndex(builtInWords: string[]) {
-    let words = [];
+/**
+ * Add followed words and rebuild index
+ * - User wordlist
+ * - `Code Spell Checker` extension user words if exist
+ */
+function loadOtherWordsAndRebuildIndex(builtInWords: string[]) {
     // User wordlist
+    let userWords = [];
     if (vscode.workspace.getConfiguration('dictCompletion').get<boolean>('useExternalUserDictFile')) {
         if (fs.existsSync(userDictFilename)) {
             let userWordListStr = fs.readFileSync(userDictFilename).toString();
             if (userWordListStr.length > 0) {
-                words = builtInWords.concat(userWordListStr.split(/\r?\n/));
+                userWords = userWordListStr.split(/\r?\n/);
             }
         }
     } else {
-        words = builtInWords.concat(vscode.workspace.getConfiguration('dictCompletion').get<Array<string>>('userDictionary'))
+        userWords = vscode.workspace.getConfiguration('dictCompletion').get<Array<string>>('userDictionary', []);
     }
+
+    // User words from `Code Spell Checker` extension
+    let cSpellWords = [];
+    if (vscode.workspace.getConfiguration('cSpell')) {
+        cSpellWords = vscode.workspace.getConfiguration('cSpell').get<Array<string>>('userWords', []);
+    }
+
+    // All the words
+    let words = builtInWords.concat(userWords, cSpellWords)
 
     words = Array.from(new Set(words));
     words = words.filter(word => word.length > 0 && !word.startsWith('//'));
