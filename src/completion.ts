@@ -80,7 +80,8 @@ function loadOtherWordsAndRebuildIndex(builtInWords: string[]) {
     // User words from `Code Spell Checker` extension
     let cSpellWords = [];
     if (vscode.workspace.getConfiguration('cSpell')) {
-        cSpellWords = vscode.workspace.getConfiguration('cSpell').get<Array<string>>('userWords', []);
+        const activeDoc = vscode.window.activeTextEditor.document;
+        cSpellWords = vscode.workspace.getConfiguration('cSpell', activeDoc.uri).get<Array<string>>('userWords', []);
     }
 
     // All the words
