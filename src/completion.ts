@@ -78,14 +78,15 @@ function loadOtherWordsAndRebuildIndex(builtInWords: string[]) {
     }
 
     // User words from `Code Spell Checker` extension
-    let cSpellWords = [];
-    if (vscode.workspace.getConfiguration('cSpell')) {
-        const activeDoc = vscode.window.activeTextEditor.document;
-        cSpellWords = vscode.workspace.getConfiguration('cSpell', activeDoc.uri).get<Array<string>>('userWords', []);
+    let otherWordLists = [];
+    const activeDoc = vscode.window.activeTextEditor.document;
+    if (vscode.workspace.getConfiguration('cSpell', activeDoc.uri)) {
+        otherWordLists.push(vscode.workspace.getConfiguration('cSpell', activeDoc.uri).get<Array<string>>('userWords', []));
+        otherWordLists.push(vscode.workspace.getConfiguration('cSpell', activeDoc.uri).get<Array<string>>('words', []));
     }
 
     // All the words
-    let words = builtInWords.concat(userWords, cSpellWords)
+    let words = builtInWords.concat(userWords, ...otherWordLists);
 
     words = Array.from(new Set(words));
     words = words.filter(word => word.length > 0 && !word.startsWith('//'));
