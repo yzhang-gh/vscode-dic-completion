@@ -1,3 +1,7 @@
+### 0.8.2 (2019.04.13)
+
+- **Fix**: Import both `cSpell.userWords` and `cSpell.words` ([#13](https://github.com/yzhang-gh/vscode-dic-completion/issues/13))
+
 ### 0.8.1 (2019.03.16)
 
 - **New**: Include word list from Code Spell extension ([#12](https://github.com/yzhang-gh/vscode-dic-completion/issues/12))

@@ -28,7 +28,7 @@ into your `settings.json`.
 | ---------------------------------------- | ------- | ---------------------------------------------------------------------------------------- |
 | `dictCompletion.leastNumOfChars`         | `0`     | Only show completion list until typing N characters                                      |
 | `dictCompletion.useExternalUserDictFile` | `true`  | When set to `false`, load custom words from `userDictionary` in the VSCode user settings |
-| `dictCompletion.userDictionary`          | `[]`    | User wordlist (should be an array of string)                                             |
+| `dictCompletion.userDictionary`          | `[]`    | User wordlist (should be an array of string) if `useExternalUserDictFile` is `false`     |
 
 ## Changelog
 

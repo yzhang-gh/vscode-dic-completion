@@ -3,7 +3,7 @@
     "displayName": "Dictionary Completion",
     "description": "Word Completion",
     "icon": "images/dictionary.png",
-    "version": "0.8.1",
+    "version": "0.8.2",
     "publisher": "yzhang",
     "license": "MIT",
     "engines": {
@@ -62,10 +62,10 @@
         "postinstall": "node ./node_modules/vscode/bin/install"
     },
     "devDependencies": {
-        "typescript": "^2.8.3",
-        "vscode": "^1.1.16",
+        "typescript": "^3.4.3",
+        "vscode": "^1.1.33",
         "mocha": "^5.1.1",
-        "@types/node": "^10.0.0",
+        "@types/node": "^11.13.4",
         "@types/mocha": "^5.2.0"
     }
 }
