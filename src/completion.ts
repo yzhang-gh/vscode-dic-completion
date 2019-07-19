@@ -78,10 +78,18 @@ function loadOtherWordsAndRebuildIndex(builtInWords: string[]) {
 
     // User words from `Code Spell Checker` extension
     let otherWordLists = [];
-    const activeDoc = vscode.window.activeTextEditor.document;
-    if (vscode.workspace.getConfiguration('cSpell', activeDoc.uri)) {
-        otherWordLists.push(vscode.workspace.getConfiguration('cSpell', activeDoc.uri).get<Array<string>>('userWords', []));
-        otherWordLists.push(vscode.workspace.getConfiguration('cSpell', activeDoc.uri).get<Array<string>>('words', []));
+    let cSpellConfig: vscode.WorkspaceConfiguration;
+    const folders = vscode.workspace.workspaceFolders || [];
+    folders.forEach(folder => {
+        cSpellConfig = vscode.workspace.getConfiguration('cSpell', folder.uri);
+        if (cSpellConfig) {
+            otherWordLists.push(cSpellConfig.get<Array<string>>('words', []));
+        }
+    })
+
+    cSpellConfig = vscode.workspace.getConfiguration('cSpell');
+    if (cSpellConfig) {
+        otherWordLists.push(cSpellConfig.get<Array<string>>('userWords', []));
     }
 
     // All the words
@@ -95,7 +103,7 @@ function loadOtherWordsAndRebuildIndex(builtInWords: string[]) {
     words.forEach(word => {
         let firstLetter = word.charAt(0).toLowerCase();
         let item = new vscode.CompletionItem(word, vscode.CompletionItemKind.Text);
-        
+
         if (!indexedComplItems.hasOwnProperty(firstLetter)) {
             indexedComplItems[firstLetter] = [];
         }
