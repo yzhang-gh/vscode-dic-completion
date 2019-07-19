@@ -1,3 +1,7 @@
+### 0.8.3 (2019.07.19)
+
+- Bug fixes
+
 ### 0.8.2 (2019.04.13)
 
 - **Fix**: Import both `cSpell.userWords` and `cSpell.words` ([#13](https://github.com/yzhang-gh/vscode-dic-completion/issues/13))
