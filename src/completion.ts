@@ -5,7 +5,6 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 let indexedComplItems = {};
-const indexes = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"];
 const userDictFilename = getUserDictFilename();
 
 export function activate(context: vscode.ExtensionContext) {
@@ -92,13 +91,14 @@ function loadOtherWordsAndRebuildIndex(builtInWords: string[]) {
     words = words.filter(word => word.length > 0 && !word.startsWith('//'));
 
     indexedComplItems = {};
-    indexes.forEach(i => {
-        indexedComplItems[i] = [];
-    });
 
     words.forEach(word => {
         let firstLetter = word.charAt(0).toLowerCase();
         let item = new vscode.CompletionItem(word, vscode.CompletionItemKind.Text);
+        
+        if (!indexedComplItems.hasOwnProperty(firstLetter)) {
+            indexedComplItems[firstLetter] = [];
+        }
         indexedComplItems[firstLetter].push(item);
     });
 }
