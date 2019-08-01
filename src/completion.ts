@@ -76,7 +76,7 @@ function loadOtherWordsAndRebuildIndex(builtInWords: string[]) {
         userWords = vscode.workspace.getConfiguration('dictCompletion').get<Array<string>>('userDictionary', []);
     }
 
-    // User words from `Code Spell Checker` extension
+    // User words from `Code Spell Checker` extension (#13)
     let otherWordLists = [];
     let cSpellConfig: vscode.WorkspaceConfiguration;
     const folders = vscode.workspace.workspaceFolders || [];
@@ -87,7 +87,7 @@ function loadOtherWordsAndRebuildIndex(builtInWords: string[]) {
         }
     })
 
-    cSpellConfig = vscode.workspace.getConfiguration('cSpell');
+    cSpellConfig = vscode.workspace.getConfiguration('cSpell', null);
     if (cSpellConfig) {
         otherWordLists.push(cSpellConfig.get<Array<string>>('userWords', []));
     }
