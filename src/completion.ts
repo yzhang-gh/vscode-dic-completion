@@ -177,14 +177,25 @@ class DictionaryCompletionItemProvider implements vscode.CompletionItemProvider 
                 if (/<[^>]*$/.test(textBefore)) {
                     return [];
                 }
+                //// Inside <style> or <srcipt>
                 let docBefore = document.getText(new vscode.Range(new vscode.Position(0, 0), position));
-                if (docBefore.includes('<style>') &&
-                    (!docBefore.includes('</style>') || docBefore.match(/<style>/g).length > docBefore.match(/<\/style>/g).length)) {
-                    return new Promise((resolve, reject) => reject());
+                if (
+                    docBefore.includes('<style>')
+                    && (
+                        !docBefore.includes('</style>')
+                        || docBefore.match(/<style>/g).length > docBefore.match(/<\/style>/g).length
+                    )
+                ) {
+                    return [];
                 }
-                if (docBefore.includes('<script>') &&
-                    (!docBefore.includes('</script>') || docBefore.match(/<script>/g).length > docBefore.match(/<\/script>/g).length)) {
-                    return new Promise((resolve, reject) => reject());
+                if (
+                    docBefore.includes('<script>')
+                    && (
+                        !docBefore.includes('</script>')
+                        || docBefore.match(/<script>/g).length > docBefore.match(/<\/script>/g).length
+                    )
+                ) {
+                    return [];
                 }
                 return this.completeByFirstLetter(firstLetter, addSpace);
         }
