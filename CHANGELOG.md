@@ -1,3 +1,7 @@
+### 0.8.4 (2019.09.29)
+
+- [#16](https://github.com/yzhang-gh/vscode-dic-completion/issues/16)
+
 ### 0.8.3 (2019.07.19)
 
 - Bug fixes

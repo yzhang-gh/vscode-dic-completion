@@ -3,7 +3,7 @@
     "displayName": "Dictionary Completion",
     "description": "Word Completion",
     "icon": "images/dictionary.png",
-    "version": "0.8.3",
+    "version": "0.8.4",
     "publisher": "yzhang",
     "license": "MIT",
     "engines": {
