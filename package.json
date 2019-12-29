@@ -17,9 +17,7 @@
         "url": "https://github.com/yzhang-gh/vscode-dic-completion"
     },
     "activationEvents": [
-        "onLanguage:markdown",
-        "onLanguage:latex",
-        "onLanguage:html",
+        "onCommand:type",
         "onCommand:completion.openUserDict"
     ],
     "main": "./out/src/extension",
