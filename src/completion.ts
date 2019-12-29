@@ -49,12 +49,15 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(
         vscode.languages.registerCompletionItemProvider(getDocSelector('markdown'), new DictionaryCompletionItemProvider("markdown")),
         vscode.languages.registerCompletionItemProvider(getDocSelector('latex'), new DictionaryCompletionItemProvider("latex")),
-        vscode.languages.registerCompletionItemProvider(getDocSelector('html'), new DictionaryCompletionItemProvider("html"))
+        vscode.languages.registerCompletionItemProvider(getDocSelector('html'), new DictionaryCompletionItemProvider("html")),
+        vscode.languages.registerCompletionItemProvider(getDocSelector(), new DictionaryCompletionItemProvider())
     );
 }
 
-function getDocSelector(lang: string) {
-    return [{ language: lang, scheme: 'file' }, { language: lang, scheme: 'untitled' }];
+function getDocSelector(lang?: string = null) {
+    return lang
+        ? [{ language: lang, scheme: 'file' }, { language: lang, scheme: 'untitled' }]
+        : [{ scheme: 'file' }, { scheme: 'untitled' }];
 }
 
 /**
@@ -132,7 +135,7 @@ function getUserDictFilename() {
  */
 class DictionaryCompletionItemProvider implements vscode.CompletionItemProvider {
     fileType: string;
-    constructor(fileType: string) {
+    constructor(fileType?: string = null) {
         this.fileType = fileType;
     }
 
@@ -198,6 +201,8 @@ class DictionaryCompletionItemProvider implements vscode.CompletionItemProvider 
                     return [];
                 }
                 return this.completeByFirstLetter(firstLetter, addSpace);
+            default:
+               return this.completeByFirstLetter(firstLetter, addSpace);
         }
     }
 
