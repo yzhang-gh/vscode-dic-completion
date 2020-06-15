@@ -46,12 +46,12 @@
                 "dictCompletion.useExternalUserDictFile": {
                     "type": "boolean",
                     "default": true,
-                    "description": "Use external user dictionary file or `userDictionary` inside VSCode settings"
+                    "markdownDescription": "Use an external user dictionary file or `userDictionary` inside VSCode settings. (The dictionary file can be open with command `Open User Dictionary`.)"
                 },
                 "dictCompletion.userDictionary": {
                     "type": "array",
                     "default": [],
-                    "description": "Custom words for completion"
+                    "markdownDescription": "A list of user words for completion (only enabled when `useExternalUserDictFile` is disabled)"
                 }
             }
         }
