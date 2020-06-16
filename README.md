@@ -1,22 +1,28 @@
+# VSCode Dictionary Completion
+
 [![version](https://vsmarketplacebadge.apphb.com/version/yzhang.dictionary-completion.svg?style=flat-square)](https://marketplace.visualstudio.com/items?itemName=yzhang.dictionary-completion)
 [![installs](https://vsmarketplacebadge.apphb.com/installs/yzhang.dictionary-completion.svg?style=flat-square)](https://marketplace.visualstudio.com/items?itemName=yzhang.dictionary-completion)
-[![AppVeyor](https://img.shields.io/appveyor/ci/yzhang-gh/vscode-dic-completion.svg?style=flat-square&label=appveyor%20build)](https://ci.appveyor.com/project/yzhang-gh/vscode-dic-completion/build/artifacts)
+[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/yzhang-gh/vscode-dic-completion/CI?style=flat-square)](https://github.com/yzhang-gh/vscode-dic-completion/actions)
+
+<img src="images/completion.png" alt="completion" width="401px">
 
 > Dictionary completion allows user to get a list of keywords, based off of the current word at the cursor.
 >
 > This is useful if you are typing a long word (e.g. acknowledgeable) and don't want to finish typing or don't remember the spelling
 >
-> Adapted from [vim wikia](http://vim.wikia.com/wiki/Dictionary_completions)
+> — adapted from [vim wikia](http://vim.wikia.com/wiki/Dictionary_completions)
 
 Enabled for Markdown, LaTeX and HTML.
 
-**Note**: After version 1.10.0, the default vscode setting disables quick suggestions for Markdown. To enable this, put
-```
-"[markdown]": {
-    "editor.quickSuggestions": true
-}
-```
-into your `settings.json`.
+- **NOTE**: After VSCode v1.10.0, quick suggestions for **Markdown** is disabled by default. To enable it, put
+  ```
+  "[markdown]": {
+      "editor.quickSuggestions": true
+  }
+  ```
+  into your `settings.json`.
+
+- **[Code Spell](https://marketplace.visualstudio.com/items?itemName=streetsidesoftware.code-spell-checker) compatible**. Words in `cSpell.userWords` and `cSpell.words` are included in the suggestion.
 
 ## Commands
 
