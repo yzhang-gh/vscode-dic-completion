@@ -32,11 +32,13 @@ Enabled for Markdown, LaTeX and HTML.
 
 ## Settings
 
-| Name                                     | Default | Description                                                                              |
-| ---------------------------------------- | ------- | ---------------------------------------------------------------------------------------- |
-| `dictCompletion.leastNumOfChars`         | `0`     | Only show completion list until typing N characters                                      |
-| `dictCompletion.useExternalUserDictFile` | `true`  | When set to `false`, load custom words from `userDictionary` in the VSCode user settings |
-| `dictCompletion.userDictionary`          | `[]`    | User wordlist (should be an array of string) if `useExternalUserDictFile` is `false`     |
+| Name                                     | Default | Description                                                                                   |
+| ---------------------------------------- | ------- | --------------------------------------------------------------------------------------------- |
+| `dictCompletion.leastNumOfChars`         | `0`     | Only show completion list until typing N characters                                           |
+| `dictCompletion.useExternalUserDictFile` | `true`  | When set to `false`, load custom words from `userDictionary` in the VSCode user settings      |
+| `dictCompletion.externalUserDictFiles`   | `[]`    | A list of paths to dictionary files                                                           |
+| `dictCompletion.userDictionary`          | `[]`    | User wordlist (should be an array of string) if `useExternalUserDictFile` is `false`          |
+| `dictCompletion.programmingLanguage`     | `false` | Whether to enable dictionary completion in string and comment of common programming languages |
 
 ## Changelog
 

@@ -57,7 +57,7 @@
                         "type": "string"
                     },
                     "default": [],
-                    "markdownDescription": "Dictionary files"
+                    "markdownDescription": "A list of paths to dictionary files"
                 },
                 "dictCompletion.userDictionary": {
                     "type": "array",
@@ -70,7 +70,7 @@
                 "dictCompletion.programmingLanguage": {
                     "type": "boolean",
                     "default": false,
-                    "markdownDescription": "Enable dictionary completion in string and comment of common programming languages"
+                    "markdownDescription": "Whether to enable dictionary completion in string and comment of common programming languages"
                 }
             }
         }
