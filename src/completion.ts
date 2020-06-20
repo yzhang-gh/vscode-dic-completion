@@ -54,6 +54,16 @@ export function activate(context: vscode.ExtensionContext) {
         vscode.languages.registerCompletionItemProvider(getDocSelector('latex'), new DictionaryCompletionItemProvider("latex")),
         vscode.languages.registerCompletionItemProvider(getDocSelector('html'), new DictionaryCompletionItemProvider("html"))
     );
+
+    const triggerChars = 'abcdefghijklmnopqrstuvwxyz'.split('');
+
+    if (vscode.workspace.getConfiguration('dictCompletion').get<boolean>('programmingLanguage')) {
+        context.subscriptions.push(
+            vscode.languages.registerCompletionItemProvider(getDocSelector('javascript'), new DictionaryCompletionItemProvider("javascript"), ...triggerChars),
+            vscode.languages.registerCompletionItemProvider(getDocSelector('typescript'), new DictionaryCompletionItemProvider("typescript"), ...triggerChars),
+            vscode.languages.registerCompletionItemProvider(getDocSelector('python'), new DictionaryCompletionItemProvider("python"), ...triggerChars)
+        );
+    }
 }
 
 function getDocSelector(lang: string) {
@@ -151,7 +161,7 @@ class DictionaryCompletionItemProvider implements vscode.CompletionItemProvider 
         this.fileType = fileType;
     }
 
-    public provideCompletionItems(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken):
+    public provideCompletionItems(document: vscode.TextDocument, position: vscode.Position, _token: vscode.CancellationToken):
         vscode.CompletionItem[] | Thenable<vscode.CompletionItem[]> {
 
         const lineText = document.lineAt(position.line).text;
@@ -213,10 +223,29 @@ class DictionaryCompletionItemProvider implements vscode.CompletionItemProvider 
                     return [];
                 }
                 return this.completeByFirstLetter(firstLetter, addSpace);
+            case "javascript":
+            case "typescript":
+                if (
+                    /\/{2,}/.test(textBefore)
+                    || (textBefore.match(/(?<!\\)'/g)?.length ?? 0) % 2 !== 0
+                    || (textBefore.match(/(?<!\\)"/g)?.length ?? 0) % 2 !== 0
+                ) {
+                    return this.completeByFirstLetter(firstLetter, addSpace);
+                }
+                return [];
+            case "python":
+                if (
+                    /#+/.test(textBefore)
+                    || (textBefore.match(/(?<!\\)'/g)?.length ?? 0) % 2 !== 0
+                    || (textBefore.match(/(?<!\\)"/g)?.length ?? 0) % 2 !== 0
+                ) {
+                    return this.completeByFirstLetter(firstLetter, addSpace);
+                }
+                return [];
         }
     }
 
-    private completeByFirstLetter(firstLetter: string, addSpace: boolean): Thenable<vscode.CompletionItem[]> {
+    private completeByFirstLetter(firstLetter: string, addSpace: boolean = false): Thenable<vscode.CompletionItem[]> {
         if (firstLetter.toLowerCase() == firstLetter) { /* Lowercase */
             let completions: vscode.CompletionItem[] = indexedComplItems[firstLetter];
             if (addSpace) {
