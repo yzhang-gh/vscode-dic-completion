@@ -61,6 +61,9 @@
                 },
                 "dictCompletion.userDictionary": {
                     "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
                     "default": [],
                     "markdownDescription": "A list of user words for completion (only enabled when `useExternalUserDictFile` is disabled)"
                 },
