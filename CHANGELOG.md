@@ -1,3 +1,8 @@
+### 0.9.0 (2020.06.20)
+
+- **New**: Option `externalUserDictFiles` which allows multiple dictionary files and Hunspell format ([#25](https://github.com/yzhang-gh/vscode-dic-completion/issues/25)).
+- **Experimental**: Option `programmingLanguage` to get word suggestions when editing string and comment of common programming languages (defaults to `false`) ([#24](https://github.com/yzhang-gh/vscode-dic-completion/issues/24)).
+
 ### 0.8.4 (2019.09.29)
 
 - [#16](https://github.com/yzhang-gh/vscode-dic-completion/issues/16)
