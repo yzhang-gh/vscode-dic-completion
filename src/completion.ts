@@ -5,7 +5,6 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 let indexedComplItems = {};
-const userDictFilename = getUserDictFilename();
 
 export function activate(context: vscode.ExtensionContext) {
     // Built-in wordlist
@@ -15,11 +14,15 @@ export function activate(context: vscode.ExtensionContext) {
 
     context.subscriptions.push(vscode.commands.registerCommand('completion.openUserDict', () => {
         if (vscode.workspace.getConfiguration('dictCompletion').get<boolean>('useExternalUserDictFile')) {
-            if (!fs.existsSync(userDictFilename)) {
-                fs.closeSync(fs.openSync(userDictFilename, 'w'));
-            }
-
-            vscode.workspace.openTextDocument(userDictFilename).then(doc => vscode.window.showTextDocument(doc));
+            vscode.window.showQuickPick(getUserDictFilenames(), { placeHolder: 'Select a dictionary file' }).then(userDictFilename => {
+                if (!userDictFilename) {
+                    return;
+                }
+                if (!fs.existsSync(userDictFilename)) {
+                    fs.closeSync(fs.openSync(userDictFilename, 'w'));
+                }
+                vscode.workspace.openTextDocument(userDictFilename).then(doc => vscode.window.showTextDocument(doc));
+            });
         } else {
             vscode.commands.executeCommand('workbench.action.openSettingsJson');
         }
@@ -28,7 +31,7 @@ export function activate(context: vscode.ExtensionContext) {
     vscode.workspace.onDidSaveTextDocument(doc => {
         if (
             vscode.workspace.getConfiguration('dictCompletion').get<boolean>('useExternalUserDictFile')
-            && doc.fileName.toLowerCase() === userDictFilename.toLowerCase()
+            && getUserDictFilenames().map(n => n.toLowerCase()).includes(doc.fileName.toLowerCase())
         ) {
             loadOtherWordsAndRebuildIndex(builtInWords);
         }
@@ -63,17 +66,27 @@ function getDocSelector(lang: string) {
  * - `Code Spell Checker` extension user words if exist
  */
 function loadOtherWordsAndRebuildIndex(builtInWords: string[]) {
-    // User wordlist
-    let userWords = [];
+    // User wordlists
+    let userWordlists = [];
     if (vscode.workspace.getConfiguration('dictCompletion').get<boolean>('useExternalUserDictFile')) {
-        if (fs.existsSync(userDictFilename)) {
-            let userWordListStr = fs.readFileSync(userDictFilename).toString();
-            if (userWordListStr.length > 0) {
-                userWords = userWordListStr.split(/\r?\n/);
+        for (const dictFilename of getUserDictFilenames()) {
+            if (fs.existsSync(dictFilename)) {
+                let userWordListStr = fs.readFileSync(dictFilename).toString();
+                if (userWordListStr.length > 0) {
+                    let list = userWordListStr.split(/\r?\n/);
+
+                    //// Hunspell format compatibility
+                    if (/\d+/.test(list[0])) {
+                        list.splice(0, 1);
+                    }
+                    list = list.map(word => word.replace(/\/.*$/, ''));
+
+                    userWordlists.push(list);
+                }
             }
         }
     } else {
-        userWords = vscode.workspace.getConfiguration('dictCompletion').get<Array<string>>('userDictionary', []);
+        userWordlists.push(vscode.workspace.getConfiguration('dictCompletion').get<Array<string>>('userDictionary', []));
     }
 
     // User words from `Code Spell Checker` extension (#13)
@@ -93,7 +106,7 @@ function loadOtherWordsAndRebuildIndex(builtInWords: string[]) {
     }
 
     // All the words
-    let words = builtInWords.concat(userWords, ...otherWordLists);
+    let words = builtInWords.concat(...userWordlists, ...otherWordLists);
 
     words = Array.from(new Set(words));
     words = words.filter(word => word.length > 0 && !word.startsWith('//'));
@@ -111,20 +124,22 @@ function loadOtherWordsAndRebuildIndex(builtInWords: string[]) {
     });
 }
 
-// From https://github.com/bartosz-antosik/vscode-spellright/blob/master/src/spellright.js
-function getUserDictFilename() {
+// Adapted from https://github.com/bartosz-antosik/vscode-spellright/blob/master/src/spellright.js
+function getUserDictFilenames() {
+    let defaultDictFile = '';
     let codeFolder = 'Code';
     const dictName = 'wordlist';
     if (vscode.version.indexOf('insider') >= 0)
         codeFolder = 'Code - Insiders';
     if (process.platform == 'win32')
-        return path.join(process.env.APPDATA, codeFolder, 'User', dictName);
+        defaultDictFile = path.join(process.env.APPDATA, codeFolder, 'User', dictName);
     else if (process.platform == 'darwin')
-        return path.join(process.env.HOME, 'Library', 'Application Support', codeFolder, 'User', dictName);
+        defaultDictFile = path.join(process.env.HOME, 'Library', 'Application Support', codeFolder, 'User', dictName);
     else if (process.platform == 'linux')
-        return path.join(process.env.HOME, '.config', codeFolder, 'User', dictName);
-    else
-        return '';
+        defaultDictFile = path.join(process.env.HOME, '.config', codeFolder, 'User', dictName);
+
+    const cfgDictFiles = vscode.workspace.getConfiguration('dictCompletion').get<string[]>('externalUserDictFiles');
+    return [defaultDictFile, ...cfgDictFiles];
 };
 
 /**

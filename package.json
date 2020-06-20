@@ -48,6 +48,14 @@
                     "default": true,
                     "markdownDescription": "Use an external user dictionary file or `userDictionary` inside VSCode settings. (The dictionary file can be open with command `Open User Dictionary`.)"
                 },
+                "dictCompletion.externalUserDictFiles": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "default": [],
+                    "markdownDescription": "Dictionary files"
+                },
                 "dictCompletion.userDictionary": {
                     "type": "array",
                     "default": [],
