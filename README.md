@@ -14,7 +14,7 @@
 
 Enabled for Markdown, LaTeX and HTML.
 
-- **NOTE**: After VSCode v1.10.0, quick suggestions for **Markdown** is disabled by default. To enable it, put
+- **NOTE**: As of VSCode v1.10.0, quick suggestions for **Markdown** is disabled by default. To enable it, put
   ```
   "[markdown]": {
       "editor.quickSuggestions": true
@@ -23,6 +23,8 @@ Enabled for Markdown, LaTeX and HTML.
   into your `settings.json`.
 
 - **[Code Spell](https://marketplace.visualstudio.com/items?itemName=streetsidesoftware.code-spell-checker) compatible**. Words in `cSpell.userWords` and `cSpell.words` are included in the suggestion.
+
+- [Hunspell format](http://manpages.ubuntu.com/manpages/cosmic/man5/hunspell.5.html) compatible.
 
 ## Commands
 
