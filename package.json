@@ -7,7 +7,7 @@
     "publisher": "yzhang",
     "license": "MIT",
     "engines": {
-        "vscode": "^1.18.0"
+        "vscode": "^1.46.0"
     },
     "categories": [
         "Other"
@@ -20,6 +20,9 @@
         "onLanguage:markdown",
         "onLanguage:latex",
         "onLanguage:html",
+        "onLanguage:javascript",
+        "onLanguage:typescript",
+        "onLanguage:python",
         "onCommand:completion.openUserDict"
     ],
     "main": "./out/src/extension",
@@ -60,20 +63,25 @@
                     "type": "array",
                     "default": [],
                     "markdownDescription": "A list of user words for completion (only enabled when `useExternalUserDictFile` is disabled)"
+                },
+                "dictCompletion.programmingLanguage": {
+                    "type": "boolean",
+                    "default": false,
+                    "markdownDescription": "Enable dictionary completion in string and comment of common programming languages"
                 }
             }
         }
     },
     "scripts": {
         "vscode:prepublish": "tsc -p ./",
-        "compile": "tsc -watch -p ./",
-        "postinstall": "node ./node_modules/vscode/bin/install"
+        "compile": "tsc -watch -p ./"
     },
     "devDependencies": {
-        "typescript": "^3.4.3",
-        "vscode": "^1.1.33",
+        "@types/mocha": "^5.2.0",
+        "@types/node": "^14.0.13",
+        "@types/vscode": "^1.46.0",
         "mocha": "^5.1.1",
-        "@types/node": "^11.13.4",
-        "@types/mocha": "^5.2.0"
+        "typescript": "^3.7.5",
+        "vscode-test": "^1.4.0"
     }
 }
