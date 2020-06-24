@@ -3,6 +3,7 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
+import { Range, Position } from 'vscode';
 
 let indexedComplItems = {};
 
@@ -170,6 +171,7 @@ class DictionaryCompletionItemProvider implements vscode.CompletionItemProvider 
 
         const lineText = document.lineAt(position.line).text;
         const textBefore = lineText.substring(0, position.character);
+        const docTextBefore = document.getText(new Range(new Position(0, 0), position));
         const wordBefore = textBefore.replace(/\W/g, ' ').split(/[\s]+/).pop();
         const firstLetter = wordBefore.charAt(0);
         const followingChar = lineText.charAt(position.character);
@@ -229,6 +231,7 @@ class DictionaryCompletionItemProvider implements vscode.CompletionItemProvider 
                 return this.completeByFirstLetter(firstLetter, addSpace);
             case "javascript":
             case "typescript":
+                //// Inline comment or string
                 if (
                     /\/{2,}/.test(textBefore)
                     || (textBefore.match(/(?<!\\)'/g)?.length ?? 0) % 2 !== 0
@@ -236,13 +239,23 @@ class DictionaryCompletionItemProvider implements vscode.CompletionItemProvider 
                 ) {
                     return this.completeByFirstLetter(firstLetter, addSpace);
                 }
+                //// Multiline comment
+                if (/\/\*((?!\*\/)[\W\w])*$/.test(docTextBefore)) {
+                    return this.completeByFirstLetter(firstLetter, addSpace);
+                }
                 return [];
             case "python":
+                //// Inline comment or string
                 if (
                     /#+/.test(textBefore)
                     || (textBefore.match(/(?<!\\)'/g)?.length ?? 0) % 2 !== 0
                     || (textBefore.match(/(?<!\\)"/g)?.length ?? 0) % 2 !== 0
                 ) {
+                    return this.completeByFirstLetter(firstLetter, addSpace);
+                }
+                //// Multiline comment
+                const tmp = docTextBefore.replace(/('''|""")[\W\w]*?\1/g, '');
+                if (/('''|""")((?!\1)[\W\w])*$/.test(tmp)) {
                     return this.completeByFirstLetter(firstLetter, addSpace);
                 }
                 return [];
