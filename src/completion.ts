@@ -47,6 +47,10 @@ export function activate(context: vscode.ExtensionContext) {
         ) {
             loadOtherWordsAndRebuildIndex(builtInWords);
         }
+
+        if (e.affectsConfiguration('dictCompletion.programmingLanguage')) {
+            vscode.window.showInformationMessage("Please restart VSCode to take effect.")
+        }
     });
 
     context.subscriptions.push(

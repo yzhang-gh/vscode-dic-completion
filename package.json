@@ -69,7 +69,7 @@
                 },
                 "dictCompletion.programmingLanguage": {
                     "type": "boolean",
-                    "default": false,
+                    "default": true,
                     "markdownDescription": "Whether to enable dictionary completion in string and comment of common programming languages"
                 }
             }
