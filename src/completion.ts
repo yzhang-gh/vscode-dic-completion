@@ -232,10 +232,11 @@ class DictionaryCompletionItemProvider implements vscode.CompletionItemProvider 
             case "javascript":
             case "typescript":
                 //// Inline comment or string
+                const tmpTextBeforeJs = textBefore.replace(/((?<!\\)'|(?<!\\)").*?\1/g, '');
                 if (
-                    /\/{2,}/.test(textBefore)
-                    || (textBefore.match(/(?<!\\)'/g)?.length ?? 0) % 2 !== 0
-                    || (textBefore.match(/(?<!\\)"/g)?.length ?? 0) % 2 !== 0
+                    /\/{2,}/.test(tmpTextBeforeJs)
+                    || /(?<!\\)'/.test(tmpTextBeforeJs)
+                    || /(?<!\\)"/.test(tmpTextBeforeJs)
                 ) {
                     return this.completeByFirstLetter(firstLetter, addSpace);
                 }
@@ -245,17 +246,18 @@ class DictionaryCompletionItemProvider implements vscode.CompletionItemProvider 
                 }
                 return [];
             case "python":
-                //// Inline comment or string
-                if (
-                    /#+/.test(textBefore)
-                    || (textBefore.match(/(?<!\\)'/g)?.length ?? 0) % 2 !== 0
-                    || (textBefore.match(/(?<!\\)"/g)?.length ?? 0) % 2 !== 0
-                ) {
+                //// Multiline comment (This check should go before inline comment/string check)
+                const tmpDocTextBefore = docTextBefore.replace(/('''|""")[\W\w]*?\1/g, '');
+                if (/('''|""")((?!\1)[\W\w])*$/.test(tmpDocTextBefore)) {
                     return this.completeByFirstLetter(firstLetter, addSpace);
                 }
-                //// Multiline comment
-                const tmp = docTextBefore.replace(/('''|""")[\W\w]*?\1/g, '');
-                if (/('''|""")((?!\1)[\W\w])*$/.test(tmp)) {
+                //// Inline comment or string
+                const tmpTextBeforePy = textBefore.replace(/('''|""")/g, '').replace(/((?<!\\)'|(?<!\\)").*?\1/g, '');
+                if (
+                    /#+/.test(tmpTextBeforePy)
+                    || /(?<!\\)'/.test(tmpTextBeforePy)
+                    || /(?<!\\)"/.test(tmpTextBeforePy)
+                ) {
                     return this.completeByFirstLetter(firstLetter, addSpace);
                 }
                 return [];
