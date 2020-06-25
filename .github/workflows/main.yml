@@ -39,5 +39,5 @@ jobs:
     - name: Upload artifact
       uses: actions/upload-artifact@v2-preview
       with:
-        name: Markdown-all-in-one-GitHub-Build
+        name: Dictionary-Completion-GitHub-Build
         path: ./*.vsix
