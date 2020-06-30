@@ -60,13 +60,11 @@ export function activate(context: vscode.ExtensionContext) {
         vscode.languages.registerCompletionItemProvider(getDocSelector('html'), new DictionaryCompletionItemProvider("html"))
     );
 
-    const triggerChars = 'abcdefghijklmnopqrstuvwxyz'.split('');
-
     if (vscode.workspace.getConfiguration('dictCompletion').get<boolean>('programmingLanguage')) {
         context.subscriptions.push(
-            vscode.languages.registerCompletionItemProvider(getDocSelector('javascript'), new DictionaryCompletionItemProvider("javascript"), ...triggerChars),
-            vscode.languages.registerCompletionItemProvider(getDocSelector('typescript'), new DictionaryCompletionItemProvider("typescript"), ...triggerChars),
-            vscode.languages.registerCompletionItemProvider(getDocSelector('python'), new DictionaryCompletionItemProvider("python"), ...triggerChars)
+            vscode.languages.registerCompletionItemProvider(getDocSelector('javascript'), new DictionaryCompletionItemProvider("javascript")),
+            vscode.languages.registerCompletionItemProvider(getDocSelector('typescript'), new DictionaryCompletionItemProvider("typescript")),
+            vscode.languages.registerCompletionItemProvider(getDocSelector('python'), new DictionaryCompletionItemProvider("python"))
         );
     }
 }
