@@ -50,7 +50,7 @@ export function activate(context: vscode.ExtensionContext) {
         }
 
         if (e.affectsConfiguration('dictCompletion.programmingLanguage')) {
-            vscode.window.showInformationMessage("Please restart VSCode to take effect.")
+            vscode.window.showInformationMessage("Please reload VSCode to take effect. (Dictionary completion for programming languages)");
         }
     });
 
@@ -66,6 +66,37 @@ export function activate(context: vscode.ExtensionContext) {
             vscode.languages.registerCompletionItemProvider(getDocSelector('typescript'), new DictionaryCompletionItemProvider("typescript")),
             vscode.languages.registerCompletionItemProvider(getDocSelector('python'), new DictionaryCompletionItemProvider("python"))
         );
+
+        //// Make sure `quickSuggestions` for string/comment is enabled
+        const cfgQuickSuggestions = vscode.workspace.getConfiguration('editor').get('quickSuggestions');
+        const allSet: boolean = cfgQuickSuggestions && cfgQuickSuggestions['comments'] && cfgQuickSuggestions['strings']
+        if (!allSet && !context.globalState.get<boolean>('dictCompl.progLang.userDisabled', false)) {
+            const option1 = 'Do it';
+            const option2 = 'Disable';
+            const option3 = 'Dismiss';
+            vscode.window.showInformationMessage(
+                'To enable dictionary completion for programming languages, we need to enable `quickSuggestions` for string/comment in user settings.',
+                option1,
+                option2,
+                option3
+            ).then(option => {
+                switch (option) {
+                    case option1:
+                        vscode.workspace.getConfiguration('editor').update('quickSuggestions', {
+                            "other": true,
+                            "comments": true,
+                            "strings": true
+                        }, vscode.ConfigurationTarget.Global);
+                        break;
+                    case option2:
+                        context.globalState.update('dictCompl.progLang.userDisabled', true);
+                        vscode.workspace.getConfiguration('dictCompletion').update('programmingLanguage', false, vscode.ConfigurationTarget.Global);
+                        break;
+                    case option3:
+                        break;
+                }
+            });
+        }
     }
 }
 

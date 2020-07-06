@@ -1,3 +1,7 @@
+### 0.9.1 (2020.07.07)
+
+- **New**: Option `programmingLanguage` now defaults to `true` and multi-line comment is supported.
+
 ### 0.9.0 (2020.06.20)
 
 - **New**: Option `externalUserDictFiles` which allows multiple dictionary files and Hunspell format ([#25](https://github.com/yzhang-gh/vscode-dic-completion/issues/25)).
