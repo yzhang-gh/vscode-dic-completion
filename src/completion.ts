@@ -260,28 +260,23 @@ class DictionaryCompletionItemProvider implements vscode.CompletionItemProvider 
                 return this.completeByFirstLetter(firstLetter, addSpace);
             case "javascript":
             case "typescript":
-
-
                 //// Multiline comment
                 if (/\/\*((?!\*\/)[\W\w])*$/.test(docTextBefore)) {
                     return this.completeByFirstLetter(firstLetter, addSpace);
                 }
                 //// Inline comment or string
                 const tmpTextBeforeJs = textBefore.replace(/((?<!\\)'|(?<!\\)").*?\1/g, '');
-                //// <don't complete in 'import' and 'require'>
-                if (tmpTextBeforeJs.includes('import') || tmpTextBeforeJs.includes('require')) {
-                    return [];
-                }
-
                 if (
-                    /\/{2,}/.test(tmpTextBeforeJs)
-                    || /(?<!\\)'/.test(tmpTextBeforeJs)
-                    || /(?<!\\)"/.test(tmpTextBeforeJs)
-
+                    !tmpTextBeforeJs.includes('import') //// reject if in import/require clauses
+                    && !tmpTextBeforeJs.includes('require')
+                    && (
+                        /\/{2,}/.test(tmpTextBeforeJs) //// inline comment
+                        || /(?<!\\)'/.test(tmpTextBeforeJs) //// inline string
+                        || /(?<!\\)"/.test(tmpTextBeforeJs)
+                    )
                 ) {
                     return this.completeByFirstLetter(firstLetter, addSpace);
                 }
-
                 return [];
             case "python":
                 //// Multiline comment (This check should go before inline comment/string check)
