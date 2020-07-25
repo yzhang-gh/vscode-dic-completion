@@ -1,3 +1,7 @@
+### 0.9.2 (2020.07.25)
+
+- **Fix**: [JavaScript/TypeScript] Do not provide completions in import/require clauses ([#29](https://github.com/yzhang-gh/vscode-markdown/pull/29)). Thanks, [Hugh (@HughWen)](https://github.com/HughWen).
+
 ### 0.9.1 (2020.07.07)
 
 - **New**: Option `programmingLanguage` now defaults to `true` and multi-line comment is supported.
