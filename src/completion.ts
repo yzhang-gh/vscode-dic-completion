@@ -267,12 +267,10 @@ class DictionaryCompletionItemProvider implements vscode.CompletionItemProvider 
                 //// Inline comment or string
                 const tmpTextBeforeJs = textBefore.replace(/((?<!\\)'|(?<!\\)").*?\1/g, '');
                 if (
-                    !tmpTextBeforeJs.includes('import') //// reject if in import/require clauses
-                    && !tmpTextBeforeJs.includes('require')
-                    && (
-                        /\/{2,}/.test(tmpTextBeforeJs) //// inline comment
-                        || /(?<!\\)'/.test(tmpTextBeforeJs) //// inline string
-                        || /(?<!\\)"/.test(tmpTextBeforeJs)
+                    /\/{2,}/.test(tmpTextBeforeJs) //// inline comment
+                    || (
+                        /(?<!\\)['"]/.test(tmpTextBeforeJs) //// inline string
+                        && !/(import|require)/.test(tmpTextBeforeJs.split(/['"]/)[0]) //// reject if in import/require clauses
                     )
                 ) {
                     return this.completeByFirstLetter(firstLetter, addSpace);
@@ -288,8 +286,7 @@ class DictionaryCompletionItemProvider implements vscode.CompletionItemProvider 
                 const tmpTextBeforePy = textBefore.replace(/('''|""")/g, '').replace(/((?<!\\)'|(?<!\\)").*?\1/g, '');
                 if (
                     /#+/.test(tmpTextBeforePy)
-                    || /(?<!\\)'/.test(tmpTextBeforePy)
-                    || /(?<!\\)"/.test(tmpTextBeforePy)
+                    || /(?<!\\)['"]/.test(tmpTextBeforePy)
                 ) {
                     return this.completeByFirstLetter(firstLetter, addSpace);
                 }
