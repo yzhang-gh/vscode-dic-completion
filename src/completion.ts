@@ -224,11 +224,11 @@ class DictionaryCompletionItemProvider implements vscode.CompletionItemProvider 
                     return [];
                 }
                 // \begin[...|] or \begin{...}[...|]
-                if (/\\(documentclass|usepackage|begin|end|cite|ref)({[^}]*}|)?\[[^\]]*$/.test(textBefore)) {
+                if (/\\(documentclass|usepackage|begin|end|cite|ref|includegraphics)({[^}]*}|)?\[[^\]]*$/.test(textBefore)) {
                     return [];
                 }
                 // \begin{...|} or \begin[...]{...|}
-                if (/\\(documentclass|usepackage|begin|end|cite|ref)(\[[^\]]*\]|)?{[^}]*$/.test(textBefore)) {
+                if (/\\(documentclass|usepackage|begin|end|cite|ref|includegraphics|input|include)(\[[^\]]*\]|)?{[^}]*$/.test(textBefore)) {
                     return [];
                 }
                 return this.completeByFirstLetter(firstLetter, addSpace);
