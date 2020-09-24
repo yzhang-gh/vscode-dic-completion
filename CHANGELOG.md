@@ -1,3 +1,7 @@
+### 1.0.0 (2020.09.24)
+
+- I'm lazy
+
 ### 0.9.2 (2020.07.25)
 
 - **Fix**: [JavaScript/TypeScript] Do not provide completions in import/require clauses ([#29](https://github.com/yzhang-gh/vscode-dic-completion/pull/29)). Thanks, [Hugh (@HughWen)](https://github.com/HughWen).
