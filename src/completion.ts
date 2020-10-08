@@ -69,11 +69,17 @@ export function activate(context: vscode.ExtensionContext) {
 
         //// Make sure `quickSuggestions` for string/comment is enabled
         const cfgQuickSuggestions = vscode.workspace.getConfiguration('editor').get('quickSuggestions');
-        const allSet: boolean = cfgQuickSuggestions && cfgQuickSuggestions['comments'] && cfgQuickSuggestions['strings']
-        if (!allSet && !context.globalState.get<boolean>('dictCompl.progLang.userDisabled', false)) {
+        const pythonObject = vscode.workspace.getConfiguration("[python]");
+        const javascriptObject = vscode.workspace.getConfiguration("[javascript]");
+        const typescriptObject = vscode.workspace.getConfiguration("[typescript]");
+        const somehowSet: boolean = cfgQuickSuggestions && cfgQuickSuggestions['comments'] && cfgQuickSuggestions['strings']
+            || pythonObject['editor.quickSuggestions']
+            || javascriptObject['editor.quickSuggestions']
+            || typescriptObject['editor.quickSuggestions'];
+        if (!somehowSet && !context.globalState.get<boolean>('dictCompl.progLang.userDisabled', false)) {
             const option1 = 'Do it';
             const option2 = 'Disable';
-            const option3 = 'Dismiss';
+            const option3 = 'Remind me later';
             vscode.window.showInformationMessage(
                 'To enable dictionary completion for programming languages, we need to enable `quickSuggestions` for string/comment in user settings.',
                 option1,
