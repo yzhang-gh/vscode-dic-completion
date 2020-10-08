@@ -29,7 +29,7 @@
 - To enable **completion for programming languages** (e.g. Python/JS/TS), be sure to use this setting
   ```js
   "editor.quickSuggestions": {
-      "other": true,
+      "other": false,
       "comments": true, // !!!
       "strings": true   // !!!
   }

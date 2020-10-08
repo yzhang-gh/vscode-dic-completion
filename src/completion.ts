@@ -89,7 +89,7 @@ export function activate(context: vscode.ExtensionContext) {
                 switch (option) {
                     case option1:
                         vscode.workspace.getConfiguration('editor').update('quickSuggestions', {
-                            "other": true,
+                            "other": false,
                             "comments": true,
                             "strings": true
                         }, vscode.ConfigurationTarget.Global);
