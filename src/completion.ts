@@ -289,10 +289,12 @@ class DictionaryCompletionItemProvider implements vscode.CompletionItemProvider 
                     return this.completeByFirstLetter(firstLetter, addSpace);
                 }
                 //// Inline comment or string
-                const tmpTextBeforePy = textBefore.replace(/('''|""")/g, '').replace(/((?<!\\)'|(?<!\\)").*?\1/g, '');
+                const inlineCheckStr1 = textBefore.replace(/('''|""")/g, '').replace(/f?(?<!\\)('|").*?(?<!\\)\1/g, '');
+                const inlineCheckStr2 = inlineCheckStr1.replace(/((?<!\\){).*?((?<!\\)})/g, '');
                 if (
-                    /#+/.test(tmpTextBeforePy)
-                    || /(?<!\\)['"]/.test(tmpTextBeforePy)
+                    /#+/.test(inlineCheckStr1)
+                    || /(?<!\\|f)['"]/.test(inlineCheckStr1)
+                    || /f(?<!\\)['"][^{]*$/.test(inlineCheckStr2)
                 ) {
                     return this.completeByFirstLetter(firstLetter, addSpace);
                 }
