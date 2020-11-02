@@ -1,3 +1,7 @@
+### 1.0.4 (2020.11.02)
+
+- **New**: Supports Python f-strings.
+
 ### 1.0.0 (2020.09.24)
 
 - I'm lazy
