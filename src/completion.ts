@@ -271,7 +271,7 @@ class DictionaryCompletionItemProvider implements vscode.CompletionItemProvider 
                     return this.completeByFirstLetter(firstLetter, addSpace);
                 }
                 //// Inline comment or string
-                const tmpTextBeforeJs = textBefore.replace(/((?<!\\)'|(?<!\\)").*?\1/g, '');
+                const tmpTextBeforeJs = textBefore.replace(/(?<!\\)('|").*?(?<!\\)\1/g, '');
                 if (
                     /\/{2,}/.test(tmpTextBeforeJs) //// inline comment
                     || (
