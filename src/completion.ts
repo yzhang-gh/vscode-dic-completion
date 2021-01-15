@@ -5,7 +5,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { Range, Position } from 'vscode';
 
-let indexedComplItems = {};
+let allWords = [];
 
 export function activate(context: vscode.ExtensionContext) {
     // Built-in wordlist
@@ -111,7 +111,7 @@ function getDocSelector(lang: string) {
 }
 
 /**
- * Add followed words and rebuild index
+ * Add following wordlists and rebuild index
  * - User wordlist
  * - `Code Spell Checker` extension user words if exist
  */
@@ -161,15 +161,12 @@ function loadOtherWordsAndRebuildIndex(builtInWords: string[]) {
     words = Array.from(new Set(words));
     words = words.filter(word => word.length > 0 && !word.startsWith('//'));
 
-    indexedComplItems = {};
+    allWords = words;
+}
 
-    words.forEach(word => {
-        let firstLetter = word.charAt(0).toLowerCase();
-        let item = new vscode.CompletionItem(word, vscode.CompletionItemKind.Text);
-
-        if (!indexedComplItems.hasOwnProperty(firstLetter)) {
-            indexedComplItems[firstLetter] = [];
-        }
+function wordlistToComplItems(words: string[]): vscode.CompletionItem[] {
+    return words.map(word => new vscode.CompletionItem(word, vscode.CompletionItemKind.Text));
+}
         indexedComplItems[firstLetter].push(item);
     });
 }
@@ -303,21 +300,24 @@ class DictionaryCompletionItemProvider implements vscode.CompletionItemProvider 
     }
 
     private completeByFirstLetter(firstLetter: string, addSpace: boolean = false): Thenable<vscode.CompletionItem[]> {
-        if (firstLetter.toLowerCase() == firstLetter) { /* Lowercase */
-            let completions: vscode.CompletionItem[] = indexedComplItems[firstLetter];
+        if (firstLetter.toLowerCase() == firstLetter) {
+            // Lowercase letter
+            let completions: vscode.CompletionItem[] = wordlistToComplItems(allWords.filter(w => w.toLowerCase().startsWith(firstLetter)));
             if (addSpace) {
                 completions.forEach(item => item.insertText = item.label + ' ');
             }
             return new Promise((resolve, reject) => resolve(completions));
-        } else { /* Uppercase */
-            let completions: vscode.CompletionItem[] = indexedComplItems[firstLetter.toLowerCase()].map(item => {
-                let newLabel = item.label.charAt(0).toUpperCase() + item.label.slice(1);
-                let newItem = new vscode.CompletionItem(newLabel, vscode.CompletionItemKind.Text);
-                if (addSpace) {
-                    newItem.insertText = newLabel + ' ';
-                }
-                return newItem;
-            });
+        } else {
+            // Uppercase letter
+            let completions: vscode.CompletionItem[] = allWords.filter(w => w.toLowerCase().startsWith(firstLetter.toLowerCase()))
+                .map(w => {
+                    let newLabel = w.charAt(0).toUpperCase() + w.slice(1);
+                    let newItem = new vscode.CompletionItem(newLabel, vscode.CompletionItemKind.Text);
+                    if (addSpace) {
+                        newItem.insertText = newLabel + ' ';
+                    }
+                    return newItem;
+                });
             return new Promise((resolve, reject) => resolve(completions));
         }
     }
