@@ -60,6 +60,7 @@ export function activate(context: vscode.ExtensionContext) {
         vscode.languages.registerCompletionItemProvider(getDocSelector('html'), new DictionaryCompletionItemProvider("html"))
     );
 
+    // Feature: programming language
     if (vscode.workspace.getConfiguration('dictCompletion').get<boolean>('programmingLanguage')) {
         context.subscriptions.push(
             vscode.languages.registerCompletionItemProvider(getDocSelector('javascript'), new DictionaryCompletionItemProvider("javascript")),
@@ -166,9 +167,6 @@ function loadOtherWordsAndRebuildIndex(builtInWords: string[]) {
 
 function wordlistToComplItems(words: string[]): vscode.CompletionItem[] {
     return words.map(word => new vscode.CompletionItem(word, vscode.CompletionItemKind.Text));
-}
-        indexedComplItems[firstLetter].push(item);
-    });
 }
 
 // Adapted from https://github.com/bartosz-antosik/vscode-spellright/blob/master/src/spellright.js
