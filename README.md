@@ -61,3 +61,9 @@ See [here](CHANGELOG.md).
 ## Credit
 
 Icons made by [Freepik](http://www.freepik.com) from [www.flaticon.com](http://www.flaticon.com) is licensed by [CC 3.0 BY](http://creativecommons.org/licenses/by/3.0/)
+
+## Other Resources
+
+- [SCOWL (Spell Checker Oriented Word Lists)](http://wordlist.aspell.net/)
+- [English Dictionaries Project (AOO+Mozilla+others)](https://github.com/marcoagpinto/aoo-mozilla-en-dict)
+- [google-10000-english](https://github.com/first20hours/google-10000-english)

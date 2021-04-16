@@ -1,3 +1,7 @@
+### 1.1.0 (2021.04.16)
+
+- **New**: 4000+ new words!
+
 ### 1.0.4 (2020.11.02)
 
 - **New**: Supports Python f-strings.
