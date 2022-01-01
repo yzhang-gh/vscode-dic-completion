@@ -22,22 +22,23 @@ jobs:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
 
-    - name: Use Node.js
-      uses: actions/setup-node@v1
+    - name: "Setup Node.js environment"
+      uses: actions/setup-node@v2
       with:
-        node-version: '12.x'
+        node-version: "14"
+        cache: "npm"
 
     # Runs a set of commands using the runners shell
     - name: Install
       run: |
-        npm install
-        npm install -g vsce
+        npm ci
+        npm i -g vsce
 
     - name: Build
       run: vsce package
 
     - name: Upload artifact
-      uses: actions/upload-artifact@v2-preview
+      uses: actions/upload-artifact@v2
       with:
-        name: Dictionary-Completion-GitHub-Build
+        name: Dictionary-Completion-GitHub-Build-${{ github.sha }}
         path: ./*.vsix
