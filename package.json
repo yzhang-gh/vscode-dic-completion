@@ -23,6 +23,8 @@
         "onLanguage:javascript",
         "onLanguage:typescript",
         "onLanguage:python",
+        "onLanguage:c",
+        "onLanguage:cpp",
         "onCommand:completion.openUserDict"
     ],
     "main": "./out/src/extension",

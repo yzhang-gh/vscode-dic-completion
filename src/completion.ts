@@ -65,45 +65,46 @@ export function activate(context: vscode.ExtensionContext) {
         context.subscriptions.push(
             vscode.languages.registerCompletionItemProvider(getDocSelector('javascript'), new DictionaryCompletionItemProvider("javascript")),
             vscode.languages.registerCompletionItemProvider(getDocSelector('typescript'), new DictionaryCompletionItemProvider("typescript")),
-            vscode.languages.registerCompletionItemProvider(getDocSelector('python'), new DictionaryCompletionItemProvider("python"))
+            vscode.languages.registerCompletionItemProvider(getDocSelector('python'), new DictionaryCompletionItemProvider("python")),
+            vscode.languages.registerCompletionItemProvider([...getDocSelector('c'), ...getDocSelector('cpp')], new DictionaryCompletionItemProvider("c"))
         );
 
-        //// Make sure `quickSuggestions` for string/comment is enabled
-        const cfgQuickSuggestions = vscode.workspace.getConfiguration('editor').get('quickSuggestions');
-        const pythonObject = vscode.workspace.getConfiguration("[python]");
-        const javascriptObject = vscode.workspace.getConfiguration("[javascript]");
-        const typescriptObject = vscode.workspace.getConfiguration("[typescript]");
-        const somehowSet: boolean = cfgQuickSuggestions && cfgQuickSuggestions['comments'] && cfgQuickSuggestions['strings']
-            || pythonObject['editor.quickSuggestions']
-            || javascriptObject['editor.quickSuggestions']
-            || typescriptObject['editor.quickSuggestions'];
-        if (!somehowSet && !context.globalState.get<boolean>('dictCompl.progLang.userDisabled', false)) {
-            const option1 = 'Do it';
-            const option2 = 'Disable';
-            const option3 = 'Remind me later';
-            vscode.window.showInformationMessage(
-                'To enable dictionary completion for programming languages, we need to enable `quickSuggestions` for string/comment in user settings.',
-                option1,
-                option2,
-                option3
-            ).then(option => {
-                switch (option) {
-                    case option1:
-                        vscode.workspace.getConfiguration('editor').update('quickSuggestions', {
-                            "other": true,
-                            "comments": true,
-                            "strings": true
-                        }, vscode.ConfigurationTarget.Global);
-                        break;
-                    case option2:
-                        context.globalState.update('dictCompl.progLang.userDisabled', true);
-                        vscode.workspace.getConfiguration('dictCompletion').update('programmingLanguage', false, vscode.ConfigurationTarget.Global);
-                        break;
-                    case option3:
-                        break;
-                }
-            });
-        }
+        //// TODO Make sure `quickSuggestions` for string/comment is enabled
+        // const cfgQuickSuggestions = vscode.workspace.getConfiguration('editor').get('quickSuggestions');
+        // const pythonObject = vscode.workspace.getConfiguration("[python]");
+        // const javascriptObject = vscode.workspace.getConfiguration("[javascript]");
+        // const typescriptObject = vscode.workspace.getConfiguration("[typescript]");
+        // const somehowSet: boolean = cfgQuickSuggestions && cfgQuickSuggestions['comments'] && cfgQuickSuggestions['strings']
+        //     || pythonObject['editor.quickSuggestions']
+        //     || javascriptObject['editor.quickSuggestions']
+        //     || typescriptObject['editor.quickSuggestions'];
+        // if (!somehowSet && !context.globalState.get<boolean>('dictCompl.progLang.userDisabled', false)) {
+        //     const option1 = 'Do it';
+        //     const option2 = 'Disable';
+        //     const option3 = 'Remind me later';
+        //     vscode.window.showInformationMessage(
+        //         'To enable dictionary completion for programming languages, we need to enable `quickSuggestions` for string/comment in user settings.',
+        //         option1,
+        //         option2,
+        //         option3
+        //     ).then(option => {
+        //         switch (option) {
+        //             case option1:
+        //                 vscode.workspace.getConfiguration('editor').update('quickSuggestions', {
+        //                     "other": true,
+        //                     "comments": true,
+        //                     "strings": true
+        //                 }, vscode.ConfigurationTarget.Global);
+        //                 break;
+        //             case option2:
+        //                 context.globalState.update('dictCompl.progLang.userDisabled', true);
+        //                 vscode.workspace.getConfiguration('dictCompletion').update('programmingLanguage', false, vscode.ConfigurationTarget.Global);
+        //                 break;
+        //             case option3:
+        //                 break;
+        //         }
+        //     });
+        // }
     }
 }
 
@@ -290,6 +291,24 @@ class DictionaryCompletionItemProvider implements vscode.CompletionItemProvider 
                     /#+/.test(inlineCheckStr1)
                     || /(?<!\\|f)['"]/.test(inlineCheckStr1)
                     || /f(?<!\\)['"][^{]*$/.test(inlineCheckStr2)
+                ) {
+                    return this.completeByFirstLetter(firstLetter, addSpace);
+                }
+                return [];
+            // TMP copied from JS/TS
+            case "c":
+                //// Multiline comment
+                if (/\/\*((?!\*\/)[\W\w])*$/.test(docTextBefore)) {
+                    return this.completeByFirstLetter(firstLetter, addSpace);
+                }
+                //// Inline comment or string
+                const tmpTextBeforeC = textBefore.replace(/(?<!\\)(").*?(?<!\\)\1/g, '');
+                if (
+                    /\/{2,}/.test(tmpTextBeforeC) //// inline comment
+                    || (
+                        /(?<!\\)["]/.test(tmpTextBeforeC) //// inline string
+                        // && !/(import|require)/.test(tmpTextBeforeC.split(/['"]/)[0]) //// reject if in import/require clauses
+                    )
                 ) {
                     return this.completeByFirstLetter(firstLetter, addSpace);
                 }
