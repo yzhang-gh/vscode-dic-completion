@@ -295,7 +295,7 @@ class DictionaryCompletionItemProvider implements vscode.CompletionItemProvider 
                     return this.completeByFirstLetter(firstLetter, addSpace);
                 }
                 return [];
-            // TMP copied from JS/TS
+            // TMP adapted from JS/TS
             case "c":
                 //// Multiline comment
                 if (/\/\*((?!\*\/)[\W\w])*$/.test(docTextBefore)) {
@@ -306,8 +306,8 @@ class DictionaryCompletionItemProvider implements vscode.CompletionItemProvider 
                 if (
                     /\/{2,}/.test(tmpTextBeforeC) //// inline comment
                     || (
-                        /(?<!\\)["]/.test(tmpTextBeforeC) //// inline string
-                        // && !/(import|require)/.test(tmpTextBeforeC.split(/['"]/)[0]) //// reject if in import/require clauses
+                        /(?<!\\)"/.test(tmpTextBeforeC) //// inline string
+                        && !/#include/.test(tmpTextBeforeC.split(/"/)[0]) //// reject if in include clauses
                     )
                 ) {
                     return this.completeByFirstLetter(firstLetter, addSpace);
