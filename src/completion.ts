@@ -313,6 +313,28 @@ class DictionaryCompletionItemProvider implements vscode.CompletionItemProvider 
                     return this.completeByFirstLetter(firstLetter, addSpace);
                 }
                 return [];
+            // TMP not tested
+            case "vue":
+                // <don't complete here>
+                if (/<[^>]*$/.test(textBefore)) {
+                    return [];
+                }
+                //// Multiline comment
+                if (/\/\*((?!\*\/)[\W\w])*$/.test(docTextBefore)) {
+                    return this.completeByFirstLetter(firstLetter, addSpace);
+                }
+                //// Inline comment or string
+                const tmpTextBeforeVue = textBefore.replace(/(?<!\\)('|").*?(?<!\\)\1/g, '');
+                if (
+                    /\/{2,}/.test(tmpTextBeforeVue) //// inline comment
+                    || (
+                        /(?<!\\)['"]/.test(tmpTextBeforeVue) //// inline string
+                        && !/(import|require)/.test(tmpTextBeforeVue.split(/['"]/)[0]) //// reject if in import/require clauses
+                    )
+                ) {
+                    return this.completeByFirstLetter(firstLetter, addSpace);
+                }
+                return [];
         }
     }
 
