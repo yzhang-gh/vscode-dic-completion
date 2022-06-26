@@ -414,7 +414,6 @@ appliance
 applicant
 application
 apply
-Apply
 appoint
 appointment
 apportion
@@ -455,6 +454,7 @@ archipelago
 architect
 architectural
 architecture
+archive
 ardent
 arduous
 area
@@ -490,7 +490,6 @@ article
 articulate
 artificial
 artificially
-Artificially
 artisan
 artist
 artistic
@@ -991,11 +990,11 @@ can
 Canadian
 cancel
 cancellation
-Cancelled
+cancelled
 cancer
 candid
 candidate
-Candidly
+candidly
 candy
 cannibalism
 cannot
@@ -1366,7 +1365,7 @@ comparison
 compatibility
 compatible
 compel
-Compelling
+compelling
 compensate
 compensation
 compensatory
@@ -1502,7 +1501,6 @@ congratulate
 congratulation
 congregate
 congress
-Congress
 congressional
 congressman
 conifer
@@ -1541,7 +1539,7 @@ consonant
 consort
 consortium
 conspicuous
-Conspicuously
+conspicuously
 conspiracy
 constancy
 constant
@@ -1779,17 +1777,15 @@ crossbreeding
 crosscut
 crossing
 crow
-Crowbar
+crowbar
 crowd
-Crowd
 crowded
 crown
 crucial
-Crucial
 crucially
 crude
 cruel
-Cruelty
+cruelty
 crumble
 crumple
 crush
@@ -1966,7 +1962,7 @@ demagnetize
 demand
 demobilize
 democracy
-Democrat
+democrat
 democratic
 demolish
 demolition
@@ -2674,6 +2670,7 @@ ethics
 ethnic
 ethnicity
 etiquette
+Euclidean
 euro
 European
 evaluate
@@ -3088,7 +3085,6 @@ forbid
 forbidding
 force
 ford
-Ford
 forebear
 forecast
 forefather
@@ -3209,6 +3205,7 @@ fumigate
 fun
 function
 functional
+functionality
 functionally
 functioning
 fund
@@ -3307,7 +3304,7 @@ GitHub
 give
 given
 glacial
-Glaciated
+glaciated
 glacier
 glad
 glamorous
@@ -3851,7 +3848,7 @@ indirect
 indirectly
 indiscretion
 indiscriminate
-Indiscriminately
+indiscriminately
 indiscrimination
 indispensable
 indistinct
@@ -5030,6 +5027,7 @@ nuclear
 nuclei
 nucleotide
 nucleus
+nuisance
 null
 number
 numeric
@@ -5233,7 +5231,7 @@ overcast
 overcharge
 overcome
 overconfident
-Overcrowd
+overcrowd
 overdue
 overestimate
 overhaul
@@ -5597,6 +5595,7 @@ pollute
 pollution
 polygon
 polygonal
+polynomial
 pool
 poor
 pop
@@ -6283,7 +6282,7 @@ reproduce
 reproduction
 reproductive
 reptile
-Republican
+republican
 repulse
 reputation
 repute
@@ -6572,7 +6571,6 @@ scissors
 scope
 score
 scotch
-Scotch
 scour
 scout
 scramble
@@ -7337,7 +7335,6 @@ supposition
 suppress
 supremacy
 supreme
-Supreme
 supremely
 surcharge
 sure
@@ -7504,6 +7501,7 @@ temper
 temperance
 temperate
 temperature
+template
 temple
 temporarily
 temporary
@@ -7805,6 +7803,7 @@ true
 truly
 trumpet
 trumpeter
+truncate
 trust
 trustworthy
 truth
@@ -7958,7 +7957,6 @@ uniqueness
 unit
 unite
 united
-United
 unity
 universal
 universe
