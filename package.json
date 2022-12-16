@@ -26,6 +26,7 @@
         "onLanguage:c",
         "onLanguage:cpp",
         "onLanguage:vue",
+        "onLanguage:todo",
         "onCommand:completion.openUserDict"
     ],
     "main": "./out/src/extension",
