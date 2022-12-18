@@ -132,7 +132,7 @@ function loadOtherWordsAndRebuildIndex(builtInWords: string[]) {
                     if (/\d+/.test(list[0])) {
                         list.splice(0, 1);
                     }
-                    list = list.map(word => word.replace(/\/.*$/, ''));
+                    list = list.map(word => word.replace(/[\/\[].*$/, ''));
 
                     userWordlists.push(list);
                 }
