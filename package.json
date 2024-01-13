@@ -3,7 +3,7 @@
     "displayName": "Dictionary Completion",
     "description": "Word Completion",
     "icon": "images/dictionary.png",
-    "version": "1.2.2",
+    "version": "1.2.3",
     "publisher": "yzhang",
     "license": "MIT",
     "engines": {
@@ -19,6 +19,7 @@
     "activationEvents": [
         "onLanguage:markdown",
         "onLanguage:latex",
+        "onLanguage:asciidoc",
         "onLanguage:html",
         "onLanguage:javascript",
         "onLanguage:typescript",

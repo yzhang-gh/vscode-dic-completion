@@ -58,6 +58,7 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(
         vscode.languages.registerCompletionItemProvider(getDocSelector('markdown'), new DictionaryCompletionItemProvider("markdown")),
         vscode.languages.registerCompletionItemProvider(getDocSelector('latex'), new DictionaryCompletionItemProvider("latex")),
+        vscode.languages.registerCompletionItemProvider(getDocSelector('asciidoc'), new DictionaryCompletionItemProvider("asciidoc")),
         vscode.languages.registerCompletionItemProvider(getDocSelector('html'), new DictionaryCompletionItemProvider("html")),
         vscode.languages.registerCompletionItemProvider(getDocSelector('todo'), new DictionaryCompletionItemProvider("markdown"))
     );
@@ -234,6 +235,8 @@ class DictionaryCompletionItemProvider implements vscode.CompletionItemProvider 
         }
 
         switch (this.fileType) {
+            case "asciidoc":
+                return this.completeByFirstLetter(firstLetter, addSpace);
             case "markdown":
                 // [caption](don't complete here)
                 if (/\[[^\]]*\]\([^\)]*$/.test(textBefore)) {
