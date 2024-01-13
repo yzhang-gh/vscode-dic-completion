@@ -5,7 +5,8 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { Range, Position } from 'vscode';
 
-let allWords = [];
+let dictWords = [];
+let currDocWords = [];  // words from the current document
 
 export function activate(context: vscode.ExtensionContext) {
     // Built-in wordlist
@@ -164,7 +165,7 @@ function loadOtherWordsAndRebuildIndex(builtInWords: string[]) {
     words = Array.from(new Set(words));
     words = words.filter(word => word.length > 0 && !word.startsWith('//'));
 
-    allWords = words;
+    dictWords = words;
 }
 
 function wordlistToComplItems(words: string[]): vscode.CompletionItem[] {
@@ -200,18 +201,26 @@ class DictionaryCompletionItemProvider implements vscode.CompletionItemProvider 
 
     public provideCompletionItems(document: vscode.TextDocument, position: vscode.Position, _token: vscode.CancellationToken):
         vscode.CompletionItem[] | Thenable<vscode.CompletionItem[]> {
-        let allWords_for_completion = [...allWords];
-        for (let i = 0; i < document.lineCount; ++i) {
-            const line = document.lineAt(i);
-            const text = line.text;
-            const words = text.split(/\b(\w+)\b/).filter((item)=>/^.*[a-zA-Z]{1,}.*$/u.test(item));
-            words.forEach((word) => {
-                if (!allWords_for_completion.includes(word)) {
-                    allWords_for_completion.push(word);
+
+        // Collect words from the current document
+        // (Naive implementation, might be improved on performance, file-type awareness, etc.)
+        const collectWords = vscode.workspace.getConfiguration('dictCompletion').get<boolean>('collectWordsFromCurrentFile');
+        const maxLineCount = Math.min(document.lineCount, 1000);
+        const currentLine = position.line;
+        if (collectWords) {
+            let _words = [];
+            for (let i = 0; i < maxLineCount; ++i) {
+                if (i === currentLine) {
+                    continue;  // Skip the current line, just a lazy way to avoid adding the current word under the cursor
                 }
-            });
+                const lineText = document.lineAt(i).text;
+                const words = lineText.split(/\b(\w+)\b/).filter((item) => /^[\w\-]+$/u.test(item));
+                _words = _words.concat(words);
+            }
+            currDocWords = _words;  // Duplicates will be removed in the function `completeByFirstLetter`
         }
-        
+
+        // Information for completion
         const lineText = document.lineAt(position.line).text;
         const textBefore = lineText.substring(0, position.character);
         const docTextBefore = document.getText(new Range(new Position(0, 0), position));
@@ -230,7 +239,7 @@ class DictionaryCompletionItemProvider implements vscode.CompletionItemProvider 
                 if (/\[[^\]]*\]\([^\)]*$/.test(textBefore)) {
                     return [];
                 }
-                return this.completeByFirstLetter(firstLetter, allWords_for_completion, addSpace);
+                return this.completeByFirstLetter(firstLetter, addSpace);
             case "latex":
                 // `|` means cursor
                 // \command|
@@ -245,7 +254,7 @@ class DictionaryCompletionItemProvider implements vscode.CompletionItemProvider 
                 if (/\\(documentclass|usepackage|begin|end|cite|ref|includegraphics|input|include)(\[[^\]]*\]|)?{[^}]*$/.test(textBefore)) {
                     return [];
                 }
-                return this.completeByFirstLetter(firstLetter, allWords_for_completion, addSpace);
+                return this.completeByFirstLetter(firstLetter, addSpace);
             case "html":
                 // <don't complete here>
                 if (/<[^>]*$/.test(textBefore)) {
@@ -271,12 +280,12 @@ class DictionaryCompletionItemProvider implements vscode.CompletionItemProvider 
                 ) {
                     return [];
                 }
-                return this.completeByFirstLetter(firstLetter, allWords_for_completion, addSpace);
+                return this.completeByFirstLetter(firstLetter, addSpace);
             case "javascript":
             case "typescript":
                 //// Multiline comment
                 if (/\/\*((?!\*\/)[\W\w])*$/.test(docTextBefore)) {
-                    return this.completeByFirstLetter(firstLetter, allWords_for_completion, addSpace);
+                    return this.completeByFirstLetter(firstLetter, addSpace);
                 }
                 //// Inline comment or string
                 const tmpTextBeforeJs = textBefore.replace(/(?<!\\)('|").*?(?<!\\)\1/g, '');
@@ -287,14 +296,14 @@ class DictionaryCompletionItemProvider implements vscode.CompletionItemProvider 
                         && !/(import|require)/.test(tmpTextBeforeJs.split(/['"]/)[0]) //// reject if in import/require clauses
                     )
                 ) {
-                    return this.completeByFirstLetter(firstLetter, allWords_for_completion, addSpace);
+                    return this.completeByFirstLetter(firstLetter, addSpace);
                 }
                 return [];
             case "python":
                 //// Multiline comment (This check should go before inline comment/string check)
                 const tmpDocTextBefore = docTextBefore.replace(/('''|""")[\W\w]*?\1/g, '');
                 if (/('''|""")((?!\1)[\W\w])*$/.test(tmpDocTextBefore)) {
-                    return this.completeByFirstLetter(firstLetter, allWords_for_completion, addSpace);
+                    return this.completeByFirstLetter(firstLetter, addSpace);
                 }
                 //// Inline comment or string
                 const inlineCheckStr1 = textBefore.replace(/('''|""")/g, '').replace(/f?(?<!\\)('|").*?(?<!\\)\1/g, '');
@@ -304,14 +313,14 @@ class DictionaryCompletionItemProvider implements vscode.CompletionItemProvider 
                     || /(?<!\\|f)['"]/.test(inlineCheckStr1)
                     || /f(?<!\\)['"][^{]*$/.test(inlineCheckStr2)
                 ) {
-                    return this.completeByFirstLetter(firstLetter, allWords_for_completion, addSpace);
+                    return this.completeByFirstLetter(firstLetter, addSpace);
                 }
                 return [];
             // TMP adapted from JS/TS
             case "c":
                 //// Multiline comment
                 if (/\/\*((?!\*\/)[\W\w])*$/.test(docTextBefore)) {
-                    return this.completeByFirstLetter(firstLetter, allWords_for_completion, addSpace);
+                    return this.completeByFirstLetter(firstLetter, addSpace);
                 }
                 //// Inline comment or string
                 const tmpTextBeforeC = textBefore.replace(/(?<!\\)(").*?(?<!\\)\1/g, '');
@@ -322,7 +331,7 @@ class DictionaryCompletionItemProvider implements vscode.CompletionItemProvider 
                         && !/#include/.test(tmpTextBeforeC.split(/"/)[0]) //// reject if in include clauses
                     )
                 ) {
-                    return this.completeByFirstLetter(firstLetter, allWords_for_completion, addSpace);
+                    return this.completeByFirstLetter(firstLetter, addSpace);
                 }
                 return [];
             // TMP not tested
@@ -333,7 +342,7 @@ class DictionaryCompletionItemProvider implements vscode.CompletionItemProvider 
                 }
                 //// Multiline comment
                 if (/\/\*((?!\*\/)[\W\w])*$/.test(docTextBefore)) {
-                    return this.completeByFirstLetter(firstLetter, allWords_for_completion, addSpace);
+                    return this.completeByFirstLetter(firstLetter, addSpace);
                 }
                 //// Inline comment or string
                 const tmpTextBeforeVue = textBefore.replace(/(?<!\\)('|").*?(?<!\\)\1/g, '');
@@ -344,23 +353,25 @@ class DictionaryCompletionItemProvider implements vscode.CompletionItemProvider 
                         && !/(import|require)/.test(tmpTextBeforeVue.split(/['"]/)[0]) //// reject if in import/require clauses
                     )
                 ) {
-                    return this.completeByFirstLetter(firstLetter, allWords_for_completion, addSpace);
+                    return this.completeByFirstLetter(firstLetter, addSpace);
                 }
                 return [];
         }
     }
 
-    private completeByFirstLetter(firstLetter: string, wordlist: string[], addSpace: boolean = false): Thenable<vscode.CompletionItem[]> {
+    private completeByFirstLetter(firstLetter: string, addSpace: boolean = false): Thenable<vscode.CompletionItem[]> {
+        const allWords = Array.from(new Set(dictWords.concat(currDocWords)));
+
         if (firstLetter.toLowerCase() == firstLetter) {
             // Lowercase letter
-            let completions: vscode.CompletionItem[] = wordlistToComplItems(wordlist.filter(w => w.toLowerCase().startsWith(firstLetter)));
+            let completions: vscode.CompletionItem[] = wordlistToComplItems(allWords.filter(w => w.toLowerCase().startsWith(firstLetter)));
             if (addSpace) {
                 completions.forEach(item => item.insertText = item.label + ' ');
             }
             return new Promise((resolve, reject) => resolve(completions));
         } else {
             // Uppercase letter
-            let completions: vscode.CompletionItem[] = wordlist.filter(w => w.toLowerCase().startsWith(firstLetter.toLowerCase()))
+            let completions: vscode.CompletionItem[] = allWords.filter(w => w.toLowerCase().startsWith(firstLetter.toLowerCase()))
                 .map(w => {
                     let newLabel = w.charAt(0).toUpperCase() + w.slice(1);
                     let newItem = new vscode.CompletionItem(newLabel, vscode.CompletionItemKind.Text);
