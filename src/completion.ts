@@ -5,7 +5,8 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { Range, Position } from 'vscode';
 
-let allWords = [];
+let dictWords = [];
+let currDocWords = [];  // words from the current document
 
 export function activate(context: vscode.ExtensionContext) {
     // Built-in wordlist
@@ -164,7 +165,7 @@ function loadOtherWordsAndRebuildIndex(builtInWords: string[]) {
     words = Array.from(new Set(words));
     words = words.filter(word => word.length > 0 && !word.startsWith('//'));
 
-    allWords = words;
+    dictWords = words;
 }
 
 function wordlistToComplItems(words: string[]): vscode.CompletionItem[] {
@@ -201,6 +202,25 @@ class DictionaryCompletionItemProvider implements vscode.CompletionItemProvider 
     public provideCompletionItems(document: vscode.TextDocument, position: vscode.Position, _token: vscode.CancellationToken):
         vscode.CompletionItem[] | Thenable<vscode.CompletionItem[]> {
 
+        // Collect words from the current document
+        // (Naive implementation, might be improved on performance, file-type awareness, etc.)
+        const collectWords = vscode.workspace.getConfiguration('dictCompletion').get<boolean>('collectWordsFromCurrentFile');
+        const maxLineCount = Math.min(document.lineCount, 1000);
+        const currentLine = position.line;
+        if (collectWords) {
+            let _words = [];
+            for (let i = 0; i < maxLineCount; ++i) {
+                if (i === currentLine) {
+                    continue;  // Skip the current line, just a lazy way to avoid adding the current word under the cursor
+                }
+                const lineText = document.lineAt(i).text;
+                const words = lineText.split(/\b(\w+)\b/).filter((item) => /^[\w\-]+$/u.test(item));
+                _words = _words.concat(words);
+            }
+            currDocWords = _words;  // Duplicates will be removed in the function `completeByFirstLetter`
+        }
+
+        // Information for completion
         const lineText = document.lineAt(position.line).text;
         const textBefore = lineText.substring(0, position.character);
         const docTextBefore = document.getText(new Range(new Position(0, 0), position));
@@ -340,6 +360,8 @@ class DictionaryCompletionItemProvider implements vscode.CompletionItemProvider 
     }
 
     private completeByFirstLetter(firstLetter: string, addSpace: boolean = false): Thenable<vscode.CompletionItem[]> {
+        const allWords = Array.from(new Set(dictWords.concat(currDocWords)));
+
         if (firstLetter.toLowerCase() == firstLetter) {
             // Lowercase letter
             let completions: vscode.CompletionItem[] = wordlistToComplItems(allWords.filter(w => w.toLowerCase().startsWith(firstLetter)));

@@ -75,6 +75,11 @@
                     "type": "boolean",
                     "default": true,
                     "markdownDescription": "Whether to enable dictionary completion in string and comment of common programming languages"
+                },
+                "dictCompletion.collectWordsFromCurrentFile": {
+                    "type": "boolean",
+                    "default": false,
+                    "markdownDescription": "Whether to collect words from the current file for completion"
                 }
             }
         }
