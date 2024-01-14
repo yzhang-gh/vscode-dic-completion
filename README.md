@@ -10,11 +10,11 @@
 >
 > — adapted from [vim wikia](http://vim.wikia.com/wiki/Dictionary_completions)
 
-#### Markdown/LaTeX/HTML
+#### Markdown / LaTeX / HTML
 
 <img src="images/completion.png" alt="completion" width="401px">
 
-#### Python/JS/TS
+#### Python / JS / TS / C / C++
 
 <img src="images/pl.png" alt="programming language" width="401px">
 

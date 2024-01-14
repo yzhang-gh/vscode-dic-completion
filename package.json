@@ -3,11 +3,11 @@
     "displayName": "Dictionary Completion",
     "description": "Word Completion",
     "icon": "images/dictionary.png",
-    "version": "1.2.2",
+    "version": "1.3.0",
     "publisher": "yzhang",
     "license": "MIT",
     "engines": {
-        "vscode": "^1.63.1"
+        "vscode": "^1.77.0"
     },
     "categories": [
         "Other"
@@ -26,8 +26,7 @@
         "onLanguage:c",
         "onLanguage:cpp",
         "onLanguage:vue",
-        "onLanguage:todo",
-        "onCommand:completion.openUserDict"
+        "onLanguage:todo"
     ],
     "main": "./out/src/extension",
     "contributes": {

@@ -1,3 +1,7 @@
+### 1.3.0 (2024.01.15)
+
+- **New**: Option `collectWordsFromCurrentFile` ([#22](https://github.com/yzhang-gh/vscode-dic-completion/issues/22)). Thanks, [@z3mu](https://github.com/z3mu).
+
 ### 1.2.1 (2022.06.26), 1.2.2 (2022.10.13)
 
 - **New**: more words
