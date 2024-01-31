@@ -2,7 +2,7 @@
 
 [![version](https://img.shields.io/vscode-marketplace/v/yzhang.dictionary-completion.svg?style=flat-square&label=vscode%20marketplace)](https://marketplace.visualstudio.com/items?itemName=yzhang.dictionary-completion)
 [![installs](https://img.shields.io/vscode-marketplace/i/yzhang.dictionary-completion.svg?style=flat-square)](https://marketplace.visualstudio.com/items?itemName=yzhang.dictionary-completion)
-[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/yzhang-gh/vscode-dic-completion/CI?style=flat-square)](https://github.com/yzhang-gh/vscode-dic-completion/actions)
+[![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/yzhang-gh/vscode-dic-completion/main.yml?branch=master&style=flat-square)](https://github.com/yzhang-gh/vscode-dic-completion/actions/workflows/main.yml)
 
 > Dictionary completion allows user to get a list of keywords, based off of the current word at the cursor.
 >
