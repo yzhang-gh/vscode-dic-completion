@@ -68,7 +68,8 @@ export function activate(context: vscode.ExtensionContext) {
             vscode.languages.registerCompletionItemProvider(getDocSelector('javascript'), new DictionaryCompletionItemProvider("javascript")),
             vscode.languages.registerCompletionItemProvider(getDocSelector('typescript'), new DictionaryCompletionItemProvider("typescript")),
             vscode.languages.registerCompletionItemProvider(getDocSelector('python'), new DictionaryCompletionItemProvider("python")),
-            vscode.languages.registerCompletionItemProvider([...getDocSelector('c'), ...getDocSelector('cpp')], new DictionaryCompletionItemProvider("c"))
+            vscode.languages.registerCompletionItemProvider([...getDocSelector('c'), ...getDocSelector('cpp')], new DictionaryCompletionItemProvider("c")),
+            vscode.languages.registerCompletionItemProvider([...getDocSelector('verilog'), ...getDocSelector('systemverilog')], new DictionaryCompletionItemProvider("verilog"))
         );
 
         //// TODO Make sure `quickSuggestions` for string/comment is enabled
@@ -318,17 +319,20 @@ class DictionaryCompletionItemProvider implements vscode.CompletionItemProvider 
                 return [];
             // TMP adapted from JS/TS
             case "c":
+            case "verilog":
                 //// Multiline comment
                 if (/\/\*((?!\*\/)[\W\w])*$/.test(docTextBefore)) {
                     return this.completeByFirstLetter(firstLetter, addSpace);
                 }
                 //// Inline comment or string
                 const tmpTextBeforeC = textBefore.replace(/(?<!\\)(").*?(?<!\\)\1/g, '');
+                // C, verilog use # and `(backtick) as preprocess directive respectively
+                const includeStr = this.fileType == "c" ? /#include/ : /`include/;
                 if (
                     /\/{2,}/.test(tmpTextBeforeC) //// inline comment
                     || (
                         /(?<!\\)"/.test(tmpTextBeforeC) //// inline string
-                        && !/#include/.test(tmpTextBeforeC.split(/"/)[0]) //// reject if in include clauses
+                        && !includeStr.test(tmpTextBeforeC.split(/"/)[0]) //// reject if in include clauses
                     )
                 ) {
                     return this.completeByFirstLetter(firstLetter, addSpace);
