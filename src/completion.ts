@@ -327,12 +327,12 @@ class DictionaryCompletionItemProvider implements vscode.CompletionItemProvider 
                 //// Inline comment or string
                 const tmpTextBeforeC = textBefore.replace(/(?<!\\)(").*?(?<!\\)\1/g, '');
                 // C, verilog use # and `(backtick) as preprocess directive respectively
-                const includeStr = this.fileType == "c" ? /#include/ : /`include/;
+                const includeStrPat = this.fileType == "c" ? /#include/ : /`include/;
                 if (
                     /\/{2,}/.test(tmpTextBeforeC) //// inline comment
                     || (
                         /(?<!\\)"/.test(tmpTextBeforeC) //// inline string
-                        && !includeStr.test(tmpTextBeforeC.split(/"/)[0]) //// reject if in include clauses
+                        && !includeStrPat.test(tmpTextBeforeC.split(/"/)[0]) //// reject if in include clauses
                     )
                 ) {
                     return this.completeByFirstLetter(firstLetter, addSpace);
