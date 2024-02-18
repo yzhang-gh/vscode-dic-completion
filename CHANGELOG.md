@@ -1,3 +1,8 @@
+### 1.3.1 (2024.02.18)
+
+- **New**: Supports Verilog/SystemVerilog  ([#47](https://github.com/yzhang-gh/vscode-dic-completion/pull/47)). Thanks, [Kefa Chen (@ckf104)](https://github.com/ckf104).
+- **Fix**: GitHub workflow badge  ([#46](https://github.com/yzhang-gh/vscode-dic-completion/pull/46)). Thanks, [Yukai Chou (@muzimuzhi)](https://github.com/muzimuzhi).
+
 ### 1.3.0 (2024.01.15)
 
 - **New**: Option `collectWordsFromCurrentFile` ([#22](https://github.com/yzhang-gh/vscode-dic-completion/issues/22)). Thanks, [@z3mu](https://github.com/z3mu).
