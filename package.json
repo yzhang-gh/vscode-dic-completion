@@ -18,6 +18,7 @@
     },
     "activationEvents": [
         "onLanguage:markdown",
+        "onLanguage:quarto",
         "onLanguage:latex",
         "onLanguage:html",
         "onLanguage:javascript",
@@ -28,6 +29,7 @@
         "onLanguage:vue",
         "onLanguage:todo",
         "onLanguage:verilog",
+        "onLanguage:julia",
         "onLanguage:systemverilog"
     ],
     "main": "./out/src/extension",

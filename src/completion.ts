@@ -57,6 +57,7 @@ export function activate(context: vscode.ExtensionContext) {
 
     context.subscriptions.push(
         vscode.languages.registerCompletionItemProvider(getDocSelector('markdown'), new DictionaryCompletionItemProvider("markdown")),
+        vscode.languages.registerCompletionItemProvider(getDocSelector('quarto'), new DictionaryCompletionItemProvider("quarto")),
         vscode.languages.registerCompletionItemProvider(getDocSelector('latex'), new DictionaryCompletionItemProvider("latex")),
         vscode.languages.registerCompletionItemProvider(getDocSelector('html'), new DictionaryCompletionItemProvider("html")),
         vscode.languages.registerCompletionItemProvider(getDocSelector('todo'), new DictionaryCompletionItemProvider("markdown"))
@@ -241,6 +242,16 @@ class DictionaryCompletionItemProvider implements vscode.CompletionItemProvider 
                     return [];
                 }
                 return this.completeByFirstLetter(firstLetter, addSpace);
+            case "quarto":
+                // [caption](don't complete here)
+                if (/\[[^\]]*\]\([^\)]*$/.test(textBefore)) {
+                    return [];
+                }
+                // ```{lang}``` -- code blocks
+                if (/\`{3}{[\w\W]*[^\`]{3}$/.test(textBefore)) {
+                    return [];
+                }
+                return this.completeByFirstLetter(firstLetter, addSpace);
             case "latex":
                 // `|` means cursor
                 // \command|
@@ -355,6 +366,24 @@ class DictionaryCompletionItemProvider implements vscode.CompletionItemProvider 
                     || (
                         /(?<!\\)['"]/.test(tmpTextBeforeVue) //// inline string
                         && !/(import|require)/.test(tmpTextBeforeVue.split(/['"]/)[0]) //// reject if in import/require clauses
+                    )
+                ) {
+                    return this.completeByFirstLetter(firstLetter, addSpace);
+                }
+                return [];
+            // Julia
+            case "julia":
+                //// Multiline comment
+                if (/\#\=((?!\=\#)[\W\w])*$/.test(docTextBefore)) {
+                    return this.completeByFirstLetter(firstLetter, addSpace);
+                }
+                //// Inline comment or string
+                const tmpTextBeforeJulia = textBefore.replace(/(?<!\#)('|").*?(?<!\#)\1/g, '');
+                if (
+                    /\/{2,}/.test(tmpTextBeforeJulia) //// inline comment
+                    || (
+                        /(?<!\#)['"]/.test(tmpTextBeforeJulia) //// inline string
+                        && !/(import|require)/.test(tmpTextBeforeJulia.split(/['"]/)[0]) //// reject if in import/require clauses
                     )
                 ) {
                     return this.completeByFirstLetter(firstLetter, addSpace);
