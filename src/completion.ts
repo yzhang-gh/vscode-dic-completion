@@ -69,6 +69,7 @@ export function activate(context: vscode.ExtensionContext) {
             vscode.languages.registerCompletionItemProvider(getDocSelector('javascript'), new DictionaryCompletionItemProvider("javascript")),
             vscode.languages.registerCompletionItemProvider(getDocSelector('typescript'), new DictionaryCompletionItemProvider("typescript")),
             vscode.languages.registerCompletionItemProvider(getDocSelector('python'), new DictionaryCompletionItemProvider("python")),
+            vscode.languages.registerCompletionItemProvider(getDocSelector('julia'), new DictionaryCompletionItemProvider("julia")),
             vscode.languages.registerCompletionItemProvider([...getDocSelector('c'), ...getDocSelector('cpp')], new DictionaryCompletionItemProvider("c")),
             vscode.languages.registerCompletionItemProvider([...getDocSelector('verilog'), ...getDocSelector('systemverilog')], new DictionaryCompletionItemProvider("verilog"))
         );
@@ -247,7 +248,8 @@ class DictionaryCompletionItemProvider implements vscode.CompletionItemProvider 
                 if (/\[[^\]]*\]\([^\)]*$/.test(textBefore)) {
                     return [];
                 }
-                // ```{lang}``` -- code blocks
+                // ```{lang}``` -- code blocks TODO: not working, new to regexp
+                // this is also useful for markdown
                 if (/\`{3}{[\w\W]*[^\`]{3}$/.test(textBefore)) {
                     return [];
                 }
