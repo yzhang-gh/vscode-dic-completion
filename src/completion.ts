@@ -250,7 +250,7 @@ class DictionaryCompletionItemProvider implements vscode.CompletionItemProvider 
                 }
                 // ```{lang}``` -- code blocks TODO: not working, new to regexp
                 // this is also useful for markdown
-                if (/\`{3}{[\w\W]*[^\`]{3}$/.test(textBefore)) {
+                if (/\`{3}{((?!\`{3})[\W\w])*$/.test(docTextBefore)) {
                     return [];
                 }
                 return this.completeByFirstLetter(firstLetter, addSpace);
@@ -382,7 +382,7 @@ class DictionaryCompletionItemProvider implements vscode.CompletionItemProvider 
                 //// Inline comment or string
                 const tmpTextBeforeJulia = textBefore.replace(/(?<!\#)('|").*?(?<!\#)\1/g, '');
                 if (
-                    /\/{2,}/.test(tmpTextBeforeJulia) //// inline comment
+                    /\#{1,}/.test(tmpTextBeforeJulia) //// inline comment
                     || (
                         /(?<!\#)['"]/.test(tmpTextBeforeJulia) //// inline string
                         && !/(import|require)/.test(tmpTextBeforeJulia.split(/['"]/)[0]) //// reject if in import/require clauses
