@@ -248,7 +248,7 @@ class DictionaryCompletionItemProvider implements vscode.CompletionItemProvider 
                 if (/\[[^\]]*\]\([^\)]*$/.test(textBefore)) {
                     return [];
                 }
-                // ```{lang}``` -- code blocks TODO: not working, new to regexp
+                // ```{lang}``` -- code blocks
                 // this is also useful for markdown
                 if (/\`{3}{((?!\`{3})[\W\w])*$/.test(docTextBefore)) {
                     return [];
@@ -385,7 +385,7 @@ class DictionaryCompletionItemProvider implements vscode.CompletionItemProvider 
                     /\#{1,}/.test(tmpTextBeforeJulia) //// inline comment
                     || (
                         /(?<!\#)['"]/.test(tmpTextBeforeJulia) //// inline string
-                        && !/(import|require)/.test(tmpTextBeforeJulia.split(/['"]/)[0]) //// reject if in import/require clauses
+                        && !/(import|using|include)/.test(tmpTextBeforeJulia.split(/['"]/)[0]) //// reject if in import/require clauses
                     )
                 ) {
                     return this.completeByFirstLetter(firstLetter, addSpace);
