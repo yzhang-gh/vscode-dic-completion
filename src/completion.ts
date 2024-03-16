@@ -57,6 +57,7 @@ export function activate(context: vscode.ExtensionContext) {
 
     context.subscriptions.push(
         vscode.languages.registerCompletionItemProvider(getDocSelector('markdown'), new DictionaryCompletionItemProvider("markdown")),
+        vscode.languages.registerCompletionItemProvider(getDocSelector('quarto'), new DictionaryCompletionItemProvider("quarto")),
         vscode.languages.registerCompletionItemProvider(getDocSelector('latex'), new DictionaryCompletionItemProvider("latex")),
         vscode.languages.registerCompletionItemProvider(getDocSelector('html'), new DictionaryCompletionItemProvider("html")),
         vscode.languages.registerCompletionItemProvider(getDocSelector('todo'), new DictionaryCompletionItemProvider("markdown"))
@@ -68,6 +69,7 @@ export function activate(context: vscode.ExtensionContext) {
             vscode.languages.registerCompletionItemProvider(getDocSelector('javascript'), new DictionaryCompletionItemProvider("javascript")),
             vscode.languages.registerCompletionItemProvider(getDocSelector('typescript'), new DictionaryCompletionItemProvider("typescript")),
             vscode.languages.registerCompletionItemProvider(getDocSelector('python'), new DictionaryCompletionItemProvider("python")),
+            vscode.languages.registerCompletionItemProvider(getDocSelector('julia'), new DictionaryCompletionItemProvider("julia")),
             vscode.languages.registerCompletionItemProvider([...getDocSelector('c'), ...getDocSelector('cpp')], new DictionaryCompletionItemProvider("c")),
             vscode.languages.registerCompletionItemProvider([...getDocSelector('verilog'), ...getDocSelector('systemverilog')], new DictionaryCompletionItemProvider("verilog"))
         );
@@ -241,6 +243,17 @@ class DictionaryCompletionItemProvider implements vscode.CompletionItemProvider 
                     return [];
                 }
                 return this.completeByFirstLetter(firstLetter, addSpace);
+            case "quarto":
+                // [caption](don't complete here)
+                if (/\[[^\]]*\]\([^\)]*$/.test(textBefore)) {
+                    return [];
+                }
+                // ```{lang}``` -- code blocks
+                // this is also useful for markdown
+                if (/\`{3}{((?!\`{3})[\W\w])*$/.test(docTextBefore)) {
+                    return [];
+                }
+                return this.completeByFirstLetter(firstLetter, addSpace);
             case "latex":
                 // `|` means cursor
                 // \command|
@@ -355,6 +368,24 @@ class DictionaryCompletionItemProvider implements vscode.CompletionItemProvider 
                     || (
                         /(?<!\\)['"]/.test(tmpTextBeforeVue) //// inline string
                         && !/(import|require)/.test(tmpTextBeforeVue.split(/['"]/)[0]) //// reject if in import/require clauses
+                    )
+                ) {
+                    return this.completeByFirstLetter(firstLetter, addSpace);
+                }
+                return [];
+            // Julia
+            case "julia":
+                //// Multiline comment
+                if (/\#\=((?!\=\#)[\W\w])*$/.test(docTextBefore)) {
+                    return this.completeByFirstLetter(firstLetter, addSpace);
+                }
+                //// Inline comment or string
+                const tmpTextBeforeJulia = textBefore.replace(/(?<!\#)('|").*?(?<!\#)\1/g, '');
+                if (
+                    /\#{1,}/.test(tmpTextBeforeJulia) //// inline comment
+                    || (
+                        /(?<!\#)['"]/.test(tmpTextBeforeJulia) //// inline string
+                        && !/(import|using|include)/.test(tmpTextBeforeJulia.split(/['"]/)[0]) //// reject if in import/require clauses
                     )
                 ) {
                     return this.completeByFirstLetter(firstLetter, addSpace);
